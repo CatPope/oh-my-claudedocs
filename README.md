@@ -12,29 +12,12 @@
 
 ## 설치
 
-OS에 맞는 스크립트를 실행한다:
+모든 OS에서 동일한 명령어로 설치한다:
 
-**macOS / Linux (bash)**
 ```bash
 git clone <docs-omc-repo>
 cd docs-omc
-bash install.sh
-```
-
-**Windows (PowerShell)**
-```powershell
-git clone <docs-omc-repo>
-cd docs-omc
-.\install.ps1
-```
-
-> PowerShell 실행 정책 오류 시: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`
-
-**Windows (CMD)**
-```cmd
-git clone <docs-omc-repo>
-cd docs-omc
-install.cmd
+node install.mjs
 ```
 
 설치 내용:
@@ -104,9 +87,7 @@ cd my-project && claude
 
 ```
 docs-omc/
-├── install.sh          # macOS / Linux
-├── install.ps1         # Windows PowerShell
-├── install.cmd         # Windows CMD
+├── install.mjs         # 통합 설치 (모든 OS)
 ├── scripts/
 │   └── merge-hooks-config.mjs
 ├── rules/
