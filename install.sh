@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# 사전 조건: bash 환경 필요 (Windows에서는 Git Bash 또는 WSL 사용)
+# 사전 조건: bash 환경 필요 (Windows에서는 install.ps1 또는 install.cmd 사용)
 # Node.js v18+, Git, Claude Code CLI 필요
 
 echo "=== Docs OMC 전역 설치 ==="
