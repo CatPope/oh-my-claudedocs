@@ -1,0 +1,15 @@
+<!-- DOCS-OMC-CONFIG-START -->
+## 프로젝트 설정
+
+| 항목 | 값 | 비고 |
+|------|-----|------|
+| 합의 언어 | {{LANGUAGE}} | 모든 문서 작성 언어 |
+| 속도 vs 보안 | {{SPEED_OR_SECURITY}} | 에이전트 자동 판단 |
+| 거버넌스 단계 | {{GOVERNANCE_LEVEL}} | 경량 / 표준 / 엄격 |
+| Git 브랜치 전략 | {{BRANCH_STRATEGY}} | 예: GitHub Flow, Git Flow |
+| 커밋 컨벤션 | {{COMMIT_CONVENTION}} | 예: Conventional Commits |
+| 코드 커버리지 목표 | {{COVERAGE_TARGET}} | 예: 80% |
+| 복잡도 기준 | {{COMPLEXITY_THRESHOLD}} | 예: Cyclomatic ≤ 10 |
+| 기술 스택 | {{TECH_STACK}} | 프레임워크, 언어, DB 등 |
+
+<!-- DOCS-OMC-CONFIG-END -->
