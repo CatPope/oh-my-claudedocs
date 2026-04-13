@@ -56,6 +56,9 @@ level: user
 - `docs/dev/performance/`
 - `docs/dev/security-checklist/`
 - `docs/dev/adr/`
+- `.agent/` — 에이전트 상태 관리 디렉토리
+
+`.agent/Note.md` 배치 (compact 시 상태 기록용)
 
 ## 3. 외부 스킬 탐색/설치
 

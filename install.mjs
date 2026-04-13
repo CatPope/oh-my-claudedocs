@@ -65,7 +65,7 @@ ok('docs-omc.md 배치 완료');
 // ─── 3단계: 사용자 훅 등록 ───
 log('[3/5] 훅 등록...');
 ensureDir(hooksDir);
-for (const hook of ['session-start.mjs', 'pre-commit-check.mjs', 'post-save-mmd.mjs']) {
+for (const hook of ['session-start.mjs', 'pre-commit-check.mjs', 'post-save-mmd.mjs', 'pre-compact.mjs', 'post-compact.mjs']) {
   copyFileSync(join(scriptDir, 'hooks', hook), join(hooksDir, hook));
 }
 ok('훅 파일 복사 완료');

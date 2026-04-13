@@ -40,6 +40,26 @@ const docsOmcHooks = {
         timeout: 15
       }]
     }
+  ],
+  PreCompact: [
+    {
+      matcher: '',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/pre-compact.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
+    }
+  ],
+  PostCompact: [
+    {
+      matcher: '',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/post-compact.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
+    }
   ]
 };
 
