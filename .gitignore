@@ -1,2 +1,4 @@
 .omc/
 .claude/settings.local.json
+.claude/compact.md
+.claudeignore

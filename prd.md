@@ -56,7 +56,7 @@ docs-omc/
 │   │               ├── env-guide.template.md       # 빈 템플릿
 │   │               ├── deploy-guide.template.md    # 빈 템플릿
 │   │               └── limitations.template.md     # 빈 템플릿
-│   ├── dev-autopilot/                  # autopilot 확장 (문서 게이트 포함)
+│   ├── dev-team/                  # autopilot 확장 (문서 게이트 포함)
 │   │   └── SKILL.md
 │   ├── security-report/                # security-reviewer 래퍼 → 파일 저장
 │   │   └── SKILL.md
@@ -120,7 +120,7 @@ echo "[4/5] 기본 스킬 확인..."
 # ─── 5단계: dev-init 스킬 및 래퍼 스킬 설치 ───
 echo "[5/5] 스킬 설치..."
 SKILLS_DIR=~/.agents/skills
-for skill in dev-init dev-autopilot security-report test-report performance-report architecture-doc; do
+for skill in dev-init dev-team security-report test-report performance-report architecture-doc; do
   mkdir -p "$SKILLS_DIR/$skill"
   cp -r "skills/$skill/"* "$SKILLS_DIR/$skill/"
 done
@@ -135,7 +135,7 @@ echo "프로젝트 초기화: 프로젝트 디렉토리에서 /dev-init 실행"
 | 2 | `rules/docs-omc.md` → `~/.claude/rules/` 복사 | 글로벌 규칙 (문서 분류, 거버넌스, 자동 설치 등) |
 | 3 | `hooks/*.mjs` → `~/.claude/hooks/docs-omc/` 복사 + `settings.json` 훅 병합 | 사용자 훅 등록 (OMC 플러그인 훅과 별도 공존) |
 | 4 | 사전 스킬 확인 | `find-skills`, `context7`은 OMC에 포함 |
-| 5 | 커스텀 스킬 설치 | `dev-init`, `dev-autopilot`, `security-report`, `test-report`, `performance-report`, `architecture-doc` |
+| 5 | 커스텀 스킬 설치 | `dev-init`, `dev-team`, `security-report`, `test-report`, `performance-report`, `architecture-doc` |
 
 ### 2.3 /dev-init 스킬 (프로젝트마다)
 
@@ -301,7 +301,7 @@ if (filePath.endsWith('.mmd')) {
 | Skill | 용도 | 상세 |
 |-------|------|------|
 | `dev-init` | 프로젝트 초기화 | CLAUDE.md + docs/dev/ 템플릿 배치, 외부 스킬 탐색/설치, SRS/PRD 선택 |
-| `dev-autopilot` | 개발 Flow 오케스트레이션 | OMC autopilot 확장 — 문서 게이트 추가 (테스트 전 test-plan 승인 등) |
+| `dev-team` | 개발 Flow 오케스트레이션 | OMC autopilot 확장 — 문서 게이트 추가 (테스트 전 test-plan 승인 등) |
 | `security-report` | 보안 점검 결과 저장 | `security-reviewer` 에이전트 래퍼 → `docs/dev/security-checklist/security-checklist-YYYY-MM-DD.md` |
 | `test-report` | 테스트 결과 저장 | `test-engineer` + `verifier` 에이전트 래퍼 → `docs/dev/test-results/test-YYYY-MM-DD.md` |
 | `architecture-doc` | Architecture 문서 생성 | 시스템 개요, 모듈/레이어, 데이터 흐름, 인프라 토폴로지 → `docs/dev/Architecture.md` |
@@ -736,4 +736,4 @@ if (filePath.endsWith('.mmd')) {
 | DetailedSpec (선택) | SDD 상세 부분 | Tech Spec 그 자체 |
 | ADR | SDD 결정 근거 부분 | Tech Spec 결정 근거 |
 | STP / GTM | 양쪽 공통 | 양쪽 공통 |
-| OMC 파이프라인 (`/dev-autopilot`) | SPMP 실행 부분 대체 | Roadmap/Backlog 부분 대체 |
+| OMC 파이프라인 (`/dev-team`) | SPMP 실행 부분 대체 | Roadmap/Backlog 부분 대체 |

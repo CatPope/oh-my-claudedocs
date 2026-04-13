@@ -42,7 +42,7 @@ cd my-project && claude
 /dev-init          → 프로젝트 초기화
 /deep-interview    → 요구사항 수집
 (기획/설계)         → STP, SRS/PRD, Architecture
-/dev-autopilot     → 문서 게이트 포함 자동 개발
+/dev-team     → 문서 게이트 포함 자동 개발
 ```
 
 ## 스킬 목록
@@ -50,7 +50,7 @@ cd my-project && claude
 | 스킬 | 용도 |
 |------|------|
 | `/dev-init` | 프로젝트 초기화 (CLAUDE.md + 템플릿 배치) |
-| `/dev-autopilot` | 문서 게이트 포함 개발 Flow 오케스트레이션 |
+| `/dev-team` | 문서 게이트 포함 개발 Flow 오케스트레이션 |
 | `/security-report` | 보안 점검 결과 저장 |
 | `/test-report` | 테스트 결과 저장 |
 | `/performance-report` | 성능 벤치마크 결과 저장 |
@@ -116,7 +116,7 @@ docs-omc/
 │   └── post-compact.mjs
 ├── skills/
 │   ├── dev-init/
-│   ├── dev-autopilot/
+│   ├── dev-team/
 │   ├── security-report/
 │   ├── test-report/
 │   ├── performance-report/

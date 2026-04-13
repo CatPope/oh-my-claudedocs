@@ -71,7 +71,7 @@ for (const f of hooksFiles) {
 // skills/*/SKILL.md referenced in install.mjs
 const skills = [
   "dev-init",
-  "dev-autopilot",
+  "dev-team",
   "security-report",
   "test-report",
   "performance-report",

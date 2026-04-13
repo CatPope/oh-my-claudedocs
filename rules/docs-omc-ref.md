@@ -60,4 +60,4 @@
 | DetailedSpec (선택) | SDD 상세 부분 | Tech Spec 그 자체 |
 | ADR | SDD 결정 근거 부분 | Tech Spec 결정 근거 |
 | STP / GTM | 양쪽 공통 | 양쪽 공통 |
-| dev-autopilot | SPMP 실행 부분 대체 | Roadmap/Backlog 부분 대체 |
+| dev-team | SPMP 실행 부분 대체 | Roadmap/Backlog 부분 대체 |
