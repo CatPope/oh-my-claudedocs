@@ -1,0 +1,120 @@
+name: AI PR Review
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  ai-review:
+    name: AI PR Review
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build PR diff
+        id: diff
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          curl -sSf \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3.diff" \
+            "${{ github.api_url }}/repos/${{ github.repository }}/compare/${{ github.event.pull_request.base.ref }}...${{ github.event.pull_request.head.sha }}" \
+            > pr.diff
+          echo "diff_path=pr.diff" >> "$GITHUB_OUTPUT"
+
+      - name: Detect sensitive path changes
+        id: path_flags
+        run: |
+          set -euo pipefail
+
+          docs_dev_changed="false"
+          templates_changed="false"
+          rules_changed="false"
+
+          while IFS= read -r line; do
+            if [[ "${line}" =~ ^\+\+\+\ b/docs/dev/ ]]; then
+              docs_dev_changed="true"
+            fi
+            if [[ "${line}" =~ ^\+\+\+\ b/skills/dev-init/templates/docs/dev/ ]]; then
+              templates_changed="true"
+            fi
+            if [[ "${line}" =~ ^\+\+\+\ b/rules/ ]]; then
+              rules_changed="true"
+            fi
+          done < "${{ steps.diff.outputs.diff_path }}"
+
+          echo "docs_dev_changed=${docs_dev_changed}" >> "$GITHUB_OUTPUT"
+          echo "templates_changed=${templates_changed}" >> "$GITHUB_OUTPUT"
+          echo "rules_changed=${rules_changed}" >> "$GITHUB_OUTPUT"
+
+      - name: Review with Fallback
+        run: node .github/scripts/review-fallback.mjs "${{ steps.diff.outputs.diff_path }}" > fallback-review.md
+
+      - name: Compose PR comment
+        env:
+          DOCS_DEV_CHANGED: ${{ steps.path_flags.outputs.docs_dev_changed }}
+          TEMPLATES_CHANGED: ${{ steps.path_flags.outputs.templates_changed }}
+          RULES_CHANGED: ${{ steps.path_flags.outputs.rules_changed }}
+        run: |
+          {
+            echo "## 🤖 AI CI 리뷰 결과"
+            echo
+            echo "- 실행 모드: 자동 PR(Fallback only)"
+            echo "- 상세 AI 리뷰는 GitHub App에서 \`/gemini review\`, \`@coderabbitai review\`로 요청하세요."
+            echo "- 요청 시 한국어 응답을 원하면 \`한국어(ko-KR)로 리뷰해주세요\` 문구를 함께 남겨주세요."
+            echo
+
+            # docs-omc 전용: 민감 경로 변경 플래그
+            if [ "${DOCS_DEV_CHANGED}" = "true" ] || [ "${TEMPLATES_CHANGED}" = "true" ] || [ "${RULES_CHANGED}" = "true" ]; then
+              echo "### ⚠️ 문서 변경 감지 — 추가 검토 필요"
+              echo
+              if [ "${DOCS_DEV_CHANGED}" = "true" ]; then
+                echo "- \`docs/dev/*\` 변경: 프로젝트 문서가 수정되었습니다. 목차 L값 및 연쇄 갱신 여부를 확인하세요."
+              fi
+              if [ "${TEMPLATES_CHANGED}" = "true" ]; then
+                echo "- \`skills/dev-init/templates/docs/dev/*\` 변경: 문서 템플릿이 수정되었습니다. 기존 프로젝트 문서와 호환성을 확인하세요."
+              fi
+              if [ "${RULES_CHANGED}" = "true" ]; then
+                echo "- \`rules/*\` 변경: 글로벌 규칙이 수정되었습니다. \`docs-omc.md\` / \`docs-omc-ref.md\` 일관성 및 CLAUDE.md 영향 여부를 확인하세요."
+              fi
+              echo
+            fi
+
+            echo "### Fallback (Rule-based)"
+            cat fallback-review.md
+            echo
+            echo "---"
+            echo "_자동 생성 코멘트입니다. 필요 시 사람이 최종 확인하세요._"
+          } > ai-review-comment.md
+
+      - name: Find existing AI comment
+        id: find_comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: github-actions[bot]
+          body-includes: "## 🤖 AI CI 리뷰 결과"
+
+      - name: Create or update AI comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find_comment.outputs.comment-id }}
+          body-path: ai-review-comment.md
+          edit-mode: replace

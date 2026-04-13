@@ -63,6 +63,21 @@ cd my-project && claude
 | `session-start.mjs` | SessionStart | OMC + 스킬 존재 확인 |
 | `pre-commit-check.mjs` | PreToolUse (Bash) | git commit 시 린트/포맷 검사 |
 | `post-save-mmd.mjs` | PostToolUse (Write) | .mmd 파일 → PNG 변환 |
+| `pre-compact.mjs` | PreCompact | compact 전 상태를 .claude/compact.md에 기록 |
+| `post-compact.mjs` | PostCompact | compact 후 .claude/compact.md 읽고 작업 재개 |
+
+## CI/CD
+
+GitHub Actions 워크플로:
+
+| 워크플로 | 용도 |
+|----------|------|
+| `docs-omc-ci.yml` | 메인 품질 게이트 (구문 검사, install 검증, 템플릿 무결성, 시크릿 스캔, 의존성 감사) |
+| `ai-pr-review.yml` | PR diff 기반 룰 리뷰 (docs/dev/ 변경 감지 포함) |
+| `ai-review-policy.yml` | AI blocker 키워드 탐지 + human 승인 강제 |
+| `codeql.yml` | JavaScript 정적 분석 (SAST) |
+| `sbom.yml` | CycloneDX SBOM 생성 |
+| `repo-governance.yml` | 브랜치 보호 + merge queue 설정 |
 
 ## 문서 분류 체계
 
@@ -96,7 +111,9 @@ docs-omc/
 ├── hooks/
 │   ├── session-start.mjs
 │   ├── pre-commit-check.mjs
-│   └── post-save-mmd.mjs
+│   ├── post-save-mmd.mjs
+│   ├── pre-compact.mjs
+│   └── post-compact.mjs
 ├── skills/
 │   ├── dev-init/
 │   ├── dev-autopilot/
@@ -104,5 +121,9 @@ docs-omc/
 │   ├── test-report/
 │   ├── performance-report/
 │   └── architecture-doc/
+├── .github/
+│   ├── workflows/       # CI/CD (6 workflows)
+│   ├── scripts/         # CI 스크립트 (6 scripts)
+│   └── pull_request_template.md
 └── README.md
 ```
