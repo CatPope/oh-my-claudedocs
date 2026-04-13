@@ -59,6 +59,7 @@ try {
 log('[2/5] Rules 배치...');
 ensureDir(rulesDir);
 copyFileSync(join(scriptDir, 'rules', 'docs-omc.md'), join(rulesDir, 'docs-omc.md'));
+copyFileSync(join(scriptDir, 'rules', 'docs-omc-ref.md'), join(rulesDir, 'docs-omc-ref.md'));
 ok('docs-omc.md 배치 완료');
 
 // ─── 3단계: 사용자 훅 등록 ───

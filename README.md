@@ -91,7 +91,8 @@ docs-omc/
 ├── scripts/
 │   └── merge-hooks-config.mjs
 ├── rules/
-│   └── docs-omc.md
+│   ├── docs-omc.md
+│   └── docs-omc-ref.md
 ├── hooks/
 │   ├── session-start.mjs
 │   ├── pre-commit-check.mjs
