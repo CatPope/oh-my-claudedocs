@@ -1,5 +1,19 @@
 # STP 분석
 
+## 목차
+1. 시장 세분화 (Segmentation) .. L19
+2. 목표 시장 선정 (Targeting) .. L26
+3. 포지셔닝 (Positioning) .. L32
+
+
+
+
+
+
+
+
+---
+
 > `/stp-framework` 스킬을 사용하여 작성한다.
 
 ## 1. 시장 세분화 (Segmentation)

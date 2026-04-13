@@ -1,5 +1,19 @@
 # 소프트웨어 요구사항 명세서 (SRS)
 
+## 목차
+1. 목적 (Purpose) .. L19
+2. 전체 설명 (Overall Description) .. L37
+3. 구체적 요구사항 (Specific Requirements) .. L87
+
+
+
+
+
+
+
+
+---
+
 > IEEE 830 기반. deep-interview 결과를 바탕으로 작성한다.
 
 ## 1. 목적 (Purpose)
