@@ -32,7 +32,7 @@ Conventional Commits 형식을 따른다.
 
 **예시:**
 ```
-feat(skills): dev-init 프로젝트 초기화 스킬 추가
+feat : dev-init 프로젝트 초기화 스킬 추가
 
 CLAUDE.md 템플릿과 docs/dev/ 문서 템플릿을 배치하고
 외부 스킬 탐색/설치 및 SRS/PRD 선택 기능 포함
