@@ -12,12 +12,12 @@
 
 ## 설치
 
-모든 OS에서 동일한 명령어로 설치한다:
+다음 명령어로 설치한다:
 
 ```bash
 git clone <docs-omc-repo>
 cd docs-omc
-node install.mjs
+node install.mjs #변경사항 전역으로 적용
 ```
 
 설치 내용:
