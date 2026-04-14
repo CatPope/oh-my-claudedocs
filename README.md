@@ -85,8 +85,17 @@ cd my-project && claude
 ## PR 규칙
 
 - PR 생성 시 `.github/pull_request_template.md` 템플릿 필수 사용
+<<<<<<< feat/dev-init-github-setup
 - 용도별로 PR을 분리한다 (관련 없는 변경을 섞지 않는다)
 - merge/close된 PR에 push해도 master에 반영되지 않으므로, push 전 PR 상태를 확인한다
+=======
+- 용도별로 PR을 분리한다 (하나의 PR에 관련 없는 변경을 섞지 않는다)
+- push 전 반드시 확인:
+  1. 해당 PR이 열려있는지 확인 (merge/close된 PR에 push해도 master에 반영되지 않는다)
+  2. PR 제목과 현재 변경 사항이 일치하는지 확인
+  3. 불일치 시 열린 PR이 있는 기존 브랜치 중 적절한 것을 찾아 사용한다
+  4. 적절한 열린 PR이 없으면 새 브랜치 → 새 PR을 생성한다
+>>>>>>> master
 
 ## 문서 분류 체계
 
