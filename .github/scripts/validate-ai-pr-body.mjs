@@ -33,7 +33,7 @@ function runGh(args) {
 
 function hasHeading(body, heading) {
   const target = `## ${heading}`;
-  return body.split("\n").some((line) => line.trim() === target);
+  return body.split("\n").some((line) => line.trim().startsWith(target));
 }
 
 function extractSection(body, heading) {
@@ -42,7 +42,7 @@ function extractSection(body, heading) {
 
   let startIndex = -1;
   for (let index = 0; index < lines.length; index += 1) {
-    if (lines[index].trim() === target) {
+    if (lines[index].trim().startsWith(target)) {
       startIndex = index + 1;
       break;
     }
@@ -89,8 +89,8 @@ for (const heading of requiredHeadings) {
 }
 
 const requiredCheckedItems = [
-  "CLAUDE.md 300줄 이하",
-  "Conventional Commits 준수"
+  "CLAUDE.md 300줄 이하 유지",
+  "Conventional Commits 형식 준수"
 ];
 
 for (const item of requiredCheckedItems) {
@@ -109,19 +109,6 @@ if (!summarySection || summarySection.length < 10) {
   errors.push("`## 변경 요약` 섹션에 내용이 필요합니다.");
 }
 
-const commitShaListRaw = runGh([
-  "api",
-  "--paginate",
-  `repos/${repository}/pulls/${prNumber}/commits`,
-  "--jq",
-  ".[].sha"
-]);
-
-const commitShas = commitShaListRaw
-  .split("\n")
-  .map((line) => line.trim())
-  .filter((line) => line.length > 0);
-
 if (errors.length > 0) {
   console.error("AI PR 본문 정책 위반:");
   for (const [index, message] of errors.entries()) {
@@ -130,4 +117,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`AI PR 본문 정책 통과: PR #${prNumber} (${commitShas.length} commits checked)`);
+console.log(`AI PR 본문 정책 통과: PR #${prNumber}`);

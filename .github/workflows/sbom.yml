@@ -1,0 +1,51 @@
+name: SBOM (CycloneDX)
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  generate-sbom:
+    name: Generate SBOM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check package.json exists
+        id: check-pkg
+        run: |
+          if [ -f package.json ]; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "No package.json found. Skipping SBOM generation."
+          fi
+
+      - name: Setup Node
+        if: steps.check-pkg.outputs.exists == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        if: steps.check-pkg.outputs.exists == 'true'
+        run: npm ci
+
+      - name: Generate CycloneDX SBOM
+        if: steps.check-pkg.outputs.exists == 'true'
+        run: npx @cyclonedx/cyclonedx-npm@1.19.3 --output-file sbom.cdx.json --output-format json
+
+      - name: Upload SBOM artifact
+        if: steps.check-pkg.outputs.exists == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: sbom.cdx.json

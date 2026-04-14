@@ -68,7 +68,7 @@ cd my-project && claude
 
 ## CI/CD
 
-GitHub Actions 워크플로:
+GitHub Actions 워크플로 (6개):
 
 | 워크플로 | 용도 |
 |----------|------|
@@ -76,6 +76,8 @@ GitHub Actions 워크플로:
 | `ai-pr-review.yml` | PR diff 기반 룰 리뷰 (docs/dev/ 변경 감지 포함) |
 | `ai-review-policy.yml` | AI blocker 키워드 탐지 + human 승인 강제 |
 | `codeql.yml` | JavaScript 정적 분석 (SAST) |
+| `repo-governance.yml` | 브랜치 보호 + Merge Queue 자동 적용 (수동 실행) |
+| `sbom.yml` | CycloneDX SBOM 생성 및 아티팩트 업로드 |
 
 ## 문서 분류 체계
 
@@ -119,9 +121,11 @@ docs-omc/
 │   ├── test-report/
 │   ├── performance-report/
 │   └── architecture-doc/
+├── .coderabbit.yaml    # CodeRabbit AI 리뷰 한국어 설정
 ├── .github/
 │   ├── workflows/       # CI/CD (6 workflows)
-│   ├── scripts/         # CI 스크립트 (6 scripts)
+│   ├── scripts/         # CI/CD 스크립트 (7 scripts)
+│   ├── dependabot.yml   # 의존성 자동 업데이트
 │   └── pull_request_template.md
 └── README.md
 ```

@@ -48,6 +48,8 @@ jobs:
 
       - name: Detect sensitive path changes
         id: path_flags
+        env:
+          DIFF_PATH: ${{ steps.diff.outputs.diff_path }}
         run: |
           set -euo pipefail
 
@@ -65,14 +67,16 @@ jobs:
             if [[ "${line}" =~ ^\+\+\+\ b/rules/ ]]; then
               rules_changed="true"
             fi
-          done < "${{ steps.diff.outputs.diff_path }}"
+          done < "${DIFF_PATH}"
 
           echo "docs_dev_changed=${docs_dev_changed}" >> "$GITHUB_OUTPUT"
           echo "templates_changed=${templates_changed}" >> "$GITHUB_OUTPUT"
           echo "rules_changed=${rules_changed}" >> "$GITHUB_OUTPUT"
 
       - name: Review with Fallback
-        run: node .github/scripts/review-fallback.mjs "${{ steps.diff.outputs.diff_path }}" > fallback-review.md
+        env:
+          DIFF_PATH: ${{ steps.diff.outputs.diff_path }}
+        run: node .github/scripts/review-fallback.mjs "${DIFF_PATH}" > fallback-review.md
 
       - name: Compose PR comment
         env:

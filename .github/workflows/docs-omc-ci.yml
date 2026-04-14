@@ -150,6 +150,9 @@ jobs:
     name: Docs OMC CI
     runs-on: ubuntu-latest
     if: always()
+    permissions:
+      contents: read
+      pull-requests: write
     needs:
       - syntax-check
       - install-verify
@@ -159,6 +162,12 @@ jobs:
 
     steps:
       - name: Check upstream job results
+        env:
+          SYNTAX_CHECK: ${{ needs.syntax-check.result }}
+          INSTALL_VERIFY: ${{ needs.install-verify.result }}
+          TEMPLATE_INTEGRITY: ${{ needs.template-integrity.result }}
+          SECRET_SCAN: ${{ needs.secret-scan.result }}
+          DEPENDENCY_AUDIT: ${{ needs.dependency-audit.result }}
         run: |
           fail=false
 
@@ -171,11 +180,11 @@ jobs:
             fi
           }
 
-          report "Syntax Check"       "${{ needs.syntax-check.result }}"
-          report "Install Verify"     "${{ needs.install-verify.result }}"
-          report "Template Integrity" "${{ needs.template-integrity.result }}"
-          report "Secret Scan"        "${{ needs.secret-scan.result }}"
-          report "Dependency Audit"   "${{ needs.dependency-audit.result }}"
+          report "Syntax Check"       "${SYNTAX_CHECK}"
+          report "Install Verify"     "${INSTALL_VERIFY}"
+          report "Template Integrity" "${TEMPLATE_INTEGRITY}"
+          report "Secret Scan"        "${SECRET_SCAN}"
+          report "Dependency Audit"   "${DEPENDENCY_AUDIT}"
 
           if [ "${fail}" = true ]; then
             echo "One or more Docs OMC CI jobs failed."

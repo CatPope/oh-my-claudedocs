@@ -1,0 +1,23 @@
+name: Repo Governance
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  administration: write
+
+jobs:
+  apply-governance:
+    name: Apply Branch Protection & Merge Queue
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Apply governance rules
+        env:
+          GH_TOKEN: ${{ secrets.REPO_ADMIN_TOKEN != '' && secrets.REPO_ADMIN_TOKEN || github.token }}
+          TARGET_REPO: ${{ github.repository }}
+        run: bash ./.github/scripts/apply-repo-governance.sh "${TARGET_REPO}"
