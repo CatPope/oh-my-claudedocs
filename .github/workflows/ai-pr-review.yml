@@ -5,6 +5,10 @@ on:
     branches: [master]
     types: [opened, synchronize, reopened, ready_for_review]
 
+concurrency:
+  group: ai-pr-review-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
@@ -30,11 +34,15 @@ jobs:
         id: diff
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          API_URL: ${{ github.api_url }}
+          REPO: ${{ github.repository }}
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           curl -sSf \
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github.v3.diff" \
-            "${{ github.api_url }}/repos/${{ github.repository }}/compare/${{ github.event.pull_request.base.ref }}...${{ github.event.pull_request.head.sha }}" \
+            "${API_URL}/repos/${REPO}/compare/${BASE_REF}...${HEAD_SHA}" \
             > pr.diff
           echo "diff_path=pr.diff" >> "$GITHUB_OUTPUT"
 

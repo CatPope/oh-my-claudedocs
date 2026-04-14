@@ -14,8 +14,16 @@ const patterns = [
     regex: /sk-[A-Za-z0-9_-]{20,}/g
   },
   {
+    name: "Anthropic API key",
+    regex: /sk-ant-[A-Za-z0-9_-]{20,}/g
+  },
+  {
     name: "Google API key",
     regex: /AIza[0-9A-Za-z_-]{20,}/g
+  },
+  {
+    name: "AWS Access Key ID",
+    regex: /AKIA[0-9A-Z]{16}/g
   },
   {
     name: "GitHub Personal Access Token (classic)",
@@ -28,6 +36,18 @@ const patterns = [
   {
     name: "GitHub fine-grained token",
     regex: /github_pat_[0-9A-Za-z_]{20,}/g
+  },
+  {
+    name: "Slack token",
+    regex: /xox[bpras]-[0-9A-Za-z-]{10,}/g
+  },
+  {
+    name: "npm token",
+    regex: /npm_[A-Za-z0-9]{36}/g
+  },
+  {
+    name: "Private key",
+    regex: /-----BEGIN\s+(RSA|EC|DSA|OPENSSH)?\s*PRIVATE KEY-----/g
   }
 ];
 
@@ -98,8 +118,11 @@ function scanHistory(depth) {
           sample: line.slice(0, 140)
         });
       }
-    } catch {
-      // exit code 1 means no matches in this commit
+    } catch (error) {
+      // exit code 1 means no matches in this commit — safe to ignore
+      if (error.status !== 1) {
+        console.warn(`Warning: git grep failed on ${commit.slice(0, 12)} (exit ${error.status})`);
+      }
     }
   }
 

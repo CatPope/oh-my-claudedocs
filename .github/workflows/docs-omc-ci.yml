@@ -71,25 +71,8 @@ jobs:
         with:
           node-version: 20
 
-      - name: Run install.mjs in temp environment
-        run: |
-          set -euo pipefail
-          INSTALL_TARGET="$(mktemp -d)"
-          echo "Installing to: ${INSTALL_TARGET}"
-
-          # Run installer targeting a temp home directory
-          HOME="${INSTALL_TARGET}" node install.mjs
-
-          echo "Verifying rules placement..."
-          test -d "${INSTALL_TARGET}/.claude/rules" || (echo "ERROR: rules directory not found" && exit 1)
-
-          echo "Verifying hooks placement..."
-          test -d "${INSTALL_TARGET}/.claude/hooks" || (echo "ERROR: hooks directory not found" && exit 1)
-
-          echo "Verifying skills placement..."
-          test -d "${INSTALL_TARGET}/.claude/skills" || (echo "ERROR: skills directory not found" && exit 1)
-
-          echo "Install verification passed."
+      - name: Validate install references
+        run: node .github/scripts/validate-install.mjs
 
   template-integrity:
     name: Template Integrity

@@ -76,8 +76,6 @@ GitHub Actions 워크플로:
 | `ai-pr-review.yml` | PR diff 기반 룰 리뷰 (docs/dev/ 변경 감지 포함) |
 | `ai-review-policy.yml` | AI blocker 키워드 탐지 + human 승인 강제 |
 | `codeql.yml` | JavaScript 정적 분석 (SAST) |
-| `sbom.yml` | CycloneDX SBOM 생성 |
-| `repo-governance.yml` | 브랜치 보호 + merge queue 설정 |
 
 ## 문서 분류 체계
 

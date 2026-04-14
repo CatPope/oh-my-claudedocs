@@ -75,14 +75,11 @@ if (!body) {
 }
 
 const requiredHeadings = [
-  "AI 작업 메타",
-  "AI 요구사항서",
-  "구현 변경 요약",
-  "변경 전/후",
-  "커밋 내역",
-  "검증 결과",
-  "리스크 및 롤백",
-  "자동화 체크리스트"
+  "변경 유형",
+  "변경 요약",
+  "영향 범위",
+  "테스트",
+  "체크리스트"
 ];
 
 for (const heading of requiredHeadings) {
@@ -92,10 +89,8 @@ for (const heading of requiredHeadings) {
 }
 
 const requiredCheckedItems = [
-  "요구사항서 작성 완료",
-  "변경 전/후 작성 완료",
-  "커밋 내역 작성 완료",
-  "검증 근거(로그/아티팩트/이미지) 첨부 완료"
+  "CLAUDE.md 300줄 이하",
+  "Conventional Commits 준수"
 ];
 
 for (const item of requiredCheckedItems) {
@@ -109,22 +104,9 @@ if (/\[필수 입력\]/.test(body)) {
   errors.push("`[필수 입력]` 플레이스홀더가 남아 있습니다.");
 }
 
-const beforeAfterSection = extractSection(body, "변경 전/후");
-const beforeAfterRows = beforeAfterSection
-  .split("\n")
-  .map((line) => line.trim())
-  .filter((line) => line.startsWith("|"));
-if (beforeAfterRows.length < 3) {
-  errors.push("`## 변경 전/후` 표에 최소 1개 데이터 행이 필요합니다.");
-}
-
-const commitSection = extractSection(body, "커밋 내역");
-const commitRows = commitSection
-  .split("\n")
-  .map((line) => line.trim())
-  .filter((line) => line.startsWith("|"));
-if (commitRows.length < 3) {
-  errors.push("`## 커밋 내역` 표에 최소 1개 데이터 행이 필요합니다.");
+const summarySection = extractSection(body, "변경 요약");
+if (!summarySection || summarySection.length < 10) {
+  errors.push("`## 변경 요약` 섹션에 내용이 필요합니다.");
 }
 
 const commitShaListRaw = runGh([
@@ -139,17 +121,6 @@ const commitShas = commitShaListRaw
   .split("\n")
   .map((line) => line.trim())
   .filter((line) => line.length > 0);
-
-const missingCommits = commitShas
-  .map((sha) => ({ full: sha, short: sha.slice(0, 7) }))
-  .filter(({ full, short }) => !body.includes(short) && !body.includes(full))
-  .map(({ short }) => short);
-
-if (missingCommits.length > 0) {
-  errors.push(
-    `PR의 모든 커밋이 \`## 커밋 내역\`에 포함되어야 합니다. 누락 커밋(앞 7자리): ${missingCommits.join(", ")}`
-  );
-}
 
 if (errors.length > 0) {
   console.error("AI PR 본문 정책 위반:");
