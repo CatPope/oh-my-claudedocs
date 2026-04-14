@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Check package.json exists
         id: check-pkg
@@ -31,7 +31,7 @@ jobs:
 
       - name: Setup Node
         if: steps.check-pkg.outputs.exists == 'true'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 20
 
@@ -45,7 +45,7 @@ jobs:
 
       - name: Upload SBOM artifact
         if: steps.check-pkg.outputs.exists == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: cyclonedx-sbom
           path: sbom.cdx.json

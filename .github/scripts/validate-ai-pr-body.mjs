@@ -68,10 +68,10 @@ const prRaw = runGh(["api", `repos/${repository}/pulls/${prNumber}`]);
 const pr = JSON.parse(prRaw);
 const body = String(pr.body || "").trim();
 
-const errors = [];
-
 if (!body) {
-  errors.push("PR 본문이 비어 있습니다.");
+  console.error("AI PR 본문 정책 위반:");
+  console.error("1. PR 본문이 비어 있습니다. PR 템플릿을 작성해 주세요.");
+  process.exit(1);
 }
 
 const requiredHeadings = [
@@ -81,6 +81,19 @@ const requiredHeadings = [
   "테스트",
   "체크리스트"
 ];
+
+const foundHeadings = requiredHeadings.filter((h) => hasHeading(body, h));
+
+// 템플릿이 아예 사용되지 않은 경우 (CLI/Claude Code 등) → 템플릿 작성 요구
+if (foundHeadings.length === 0) {
+  console.error("AI PR 본문 정책 위반:");
+  console.error("1. PR 템플릿이 감지되지 않았습니다. GitHub에서 PR 본문을 편집하여 템플릿을 작성해 주세요.");
+  console.error("   필수 섹션: ## 변경 유형, ## 변경 요약, ## 영향 범위, ## 테스트, ## 체크리스트");
+  process.exit(1);
+}
+
+// 템플릿이 부분적으로 사용된 경우 → 누락 섹션 검증
+const errors = [];
 
 for (const heading of requiredHeadings) {
   if (!hasHeading(body, heading)) {
