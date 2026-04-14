@@ -43,7 +43,9 @@ level: user
       "Bash(git checkout *)",
       "Bash(git branch *)",
       "Bash(node -c *)",
-      "Bash(node install.mjs)"
+      "Bash(node install.mjs)",
+      "Edit(.claude/compact.md)",
+      "Write(.claude/compact.md)"
     ],
     "deny": [
       "Bash(rm -rf *)",
