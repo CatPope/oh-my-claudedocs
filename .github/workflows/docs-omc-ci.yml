@@ -195,7 +195,7 @@ jobs:
 
       - name: Post final CI digest
         if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         env:
           SYNTAX_RESULT:    ${{ needs.syntax-check.result }}
           INSTALL_RESULT:   ${{ needs.install-verify.result }}
