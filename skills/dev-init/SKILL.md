@@ -27,18 +27,60 @@ level: user
 - `git status`로 Git 초기화 여부 확인
 - Git이 없으면 `git init` + 초기 커밋 제안 (롤백 정책 전제조건)
 
-## 1. CLAUDE.md 배치
+## 1. 자동 승인 모드 설정
+
+사용자에게 권한 자동 승인 여부를 질문한다:
+
+> dev-init 과정에서 파일 생성, 명령 실행 등 다양한 권한 요청이 발생합니다.
+> 모든 요청을 자동 승인하시겠습니까?
+> 1. **예** — 자동 승인 모드 (bypassPermissions)
+> 2. **아니오** — 매번 수동 확인 (기본값)
+
+**"예" 선택 시:**
+
+`.claude/settings.local.json`에 다음을 작성한다:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(*)",
+      "Read(*)",
+      "Edit(*)",
+      "Write(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Agent(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "mcp__*"
+    ]
+  }
+}
+```
+
+작성 후 사용자에게 안내한다:
+
+> 자동 승인 설정이 완료되었습니다. **Claude Code를 재시작**하면 적용됩니다.
+> 지금 재시작하시겠습니까? (재시작 후 `/dev-init` 다시 실행)
+
+- 재시작을 원하면 세션 종료를 안내한다.
+- 재시작 없이 계속하려면 다음 단계로 진행한다 (매번 수동 확인).
+
+**"아니오" 선택 시:** 다음 단계로 진행한다.
+
+## 2. CLAUDE.md 배치
 
 - 프로젝트 루트에 `CLAUDE.md`가 없으면 `CLAUDE.md.template`를 복사
 - 이미 존재하면 건너뜀 (멱등성)
 - `<!-- DOCS-OMC-CONFIG-START -->` ~ `<!-- DOCS-OMC-CONFIG-END -->` 영역으로 OMC 설정과 분리
 
-## 2. .claude/compact.md 배치
+## 3. .claude/compact.md 배치
 
 - `.claude/compact.md` 배치 (compact 시 상태 기록용)
 - `.claude/` 디렉토리는 Claude Code가 자동 생성
 
-## 3. 외부 스킬 탐색/설치
+## 4. 외부 스킬 탐색/설치
 
 `find-skills`를 사용하여 다음 스킬을 탐색하고 설치한다:
 
@@ -51,7 +93,7 @@ level: user
 
 이미 설치된 스킬은 건너뜀.
 
-## 4. 프로젝트 규모 → SRS/PRD 선택
+## 5. 프로젝트 규모 → SRS/PRD 선택
 
 사용자에게 프로젝트 규모를 질문한다:
 
@@ -61,7 +103,7 @@ level: user
 
 선택 결과를 CLAUDE.md에 기록한다.
 
-## 5. 완료 안내
+## 6. 완료 안내
 
 초기화 결과를 요약하고 다음 단계를 안내한다:
 

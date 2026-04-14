@@ -13,7 +13,7 @@ const home = homedir();
 const claudeDir = join(home, '.claude');
 const hooksDir = join(claudeDir, 'hooks', 'docs-omc');
 const rulesDir = join(claudeDir, 'rules');
-const agentsDir = join(home, '.agents', 'skills');
+const skillsDir = join(claudeDir, 'skills');
 const scriptDir = resolve(import.meta.url.replace('file:///', '').replace('file://', ''), '..');
 
 function log(msg) { console.log(msg); }
@@ -82,27 +82,43 @@ try {
 
 // ─── 4단계: 사전 스킬 확인 ───
 log('[4/5] 기본 스킬 확인...');
-const findSkillsPath = join(home, '.agents', 'skills', 'find-skills', 'SKILL.md');
+const findSkillsPath = join(claudeDir, 'skills', 'find-skills', 'SKILL.md');
 if (existsSync(findSkillsPath)) {
   ok('find-skills');
 } else {
   warn('find-skills 스킬이 없습니다. OMC 설치를 확인하세요.');
 }
 
-const settingsPath = join(claudeDir, 'settings.json');
+let context7Found = false;
+
+// 전역: ~/.claude.json (claude mcp add로 등록된 MCP)
 try {
-  if (existsSync(settingsPath)) {
-    const settings = readFileSync(settingsPath, 'utf8');
-    if (settings.includes('"context7"')) {
-      ok('context7');
-    } else {
-      warn('context7 MCP 서버가 설정되지 않았습니다.');
+  const globalConfig = join(home, '.claude.json');
+  if (existsSync(globalConfig)) {
+    const config = JSON.parse(readFileSync(globalConfig, 'utf8'));
+    if (config.mcpServers && config.mcpServers.context7) {
+      context7Found = true;
+      ok('context7 (전역 MCP)');
     }
-  } else {
-    warn('context7 MCP 서버가 설정되지 않았습니다.');
   }
-} catch {
-  warn('settings.json 확인 실패');
+} catch { /* ~/.claude.json 파싱 실패 */ }
+
+// 로컬: .mcp.json
+if (!context7Found) {
+  const localMcp = join(process.cwd(), '.mcp.json');
+  try {
+    if (existsSync(localMcp)) {
+      const mcpJson = readFileSync(localMcp, 'utf8');
+      if (mcpJson.includes('"context7"')) {
+        context7Found = true;
+        ok('context7 (로컬 .mcp.json)');
+      }
+    }
+  } catch { /* .mcp.json 읽기 실패 */ }
+}
+
+if (!context7Found) {
+  warn('context7 MCP 서버가 설정되지 않았습니다.');
 }
 
 // ─── 5단계: 커스텀 스킬 설치 ───
@@ -110,10 +126,13 @@ log('[5/5] 스킬 설치...');
 const skills = ['dev-init', 'docs-init', 'dev-team', 'security-report', 'test-report', 'performance-report', 'architecture-doc'];
 for (const skill of skills) {
   const src = join(scriptDir, 'skills', skill);
-  const dest = join(agentsDir, skill);
+  const dest = join(skillsDir, skill);
   copyRecursive(src, dest);
   ok(`${skill} 설치됨`);
 }
 
 log('\n=== 설치 완료 ===');
-log('프로젝트 초기화: 프로젝트 디렉토리에서 /dev-init 실행');
+if (!context7Found) {
+  log('  context7 MCP 설치: https://context7.com/');
+}
+log('프로젝트 초기화: 프로젝트 디렉토리에서 claude /dev-init 실행');

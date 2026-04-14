@@ -25,7 +25,7 @@ try {
   const { existsSync } = await import('fs');
   const { join } = await import('path');
   const home = process.env.HOME || process.env.USERPROFILE || '';
-  const skillPath = join(home, '.agents', 'skills', 'find-skills', 'SKILL.md');
+  const skillPath = join(home, '.claude', 'skills', 'find-skills', 'SKILL.md');
   if (!existsSync(skillPath)) {
     warnings.push('find-skills 스킬이 없습니다. OMC 설치를 확인하세요.');
   }
@@ -33,21 +33,36 @@ try {
   warnings.push('find-skills 확인 실패.');
 }
 
-// 3. context7 MCP 확인 (settings.json에서 mcpServers 확인)
+// 3. context7 MCP 확인 (전역 ~/.claude.json → 로컬 .mcp.json)
+let context7Found = false;
 try {
   const { readFileSync, existsSync } = await import('fs');
   const { join } = await import('path');
   const home = process.env.HOME || process.env.USERPROFILE || '';
-  const settingsPath = join(home, '.claude', 'settings.json');
-  if (existsSync(settingsPath)) {
-    const settings = JSON.parse(readFileSync(settingsPath, 'utf8'));
-    const mcpServers = settings.mcpServers || {};
-    if (!mcpServers.context7) {
-      warnings.push('context7 MCP 서버가 설정되지 않았습니다.');
+
+  // 전역: ~/.claude.json (claude mcp add로 등록된 MCP)
+  const globalConfig = join(home, '.claude.json');
+  if (existsSync(globalConfig)) {
+    const config = JSON.parse(readFileSync(globalConfig, 'utf8'));
+    if (config.mcpServers && config.mcpServers.context7) {
+      context7Found = true;
     }
   }
-} catch {
-  // settings.json 파싱 실패 시 무시
+
+  // 로컬: .mcp.json
+  if (!context7Found) {
+    const localMcp = '.mcp.json';
+    if (existsSync(localMcp)) {
+      const mcpJson = readFileSync(localMcp, 'utf8');
+      if (mcpJson.includes('"context7"')) {
+        context7Found = true;
+      }
+    }
+  }
+} catch { /* 파일 읽기 실패 시 무시 */ }
+
+if (!context7Found) {
+  warnings.push('context7 MCP 서버가 설정되지 않았습니다. 설치: https://context7.com/');
 }
 
 if (warnings.length > 0) {
