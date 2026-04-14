@@ -25,7 +25,7 @@ node install.mjs #변경사항 전역으로 적용
 2. `~/.claude/rules/docs-omc.md` 배치
 3. `~/.claude/hooks/docs-omc/*.mjs` 배치 + settings.json 훅 등록
 4. 기본 스킬 확인 (find-skills, context7)
-5. 커스텀 스킬 6개 설치 (`~/.agents/skills/`)
+5. 커스텀 스킬 7개 설치 (`~/.agents/skills/`)
 
 ## 사용법
 
@@ -39,17 +39,21 @@ cd my-project && claude
 ### 전체 개발 Flow
 
 ```
-/dev-init          → 프로젝트 초기화
+/dev-init          → 개발 환경 초기화 (Git, CLAUDE.md, 스킬)
+/docs-init plan    → 기획/설계 문서 템플릿 배치
 /deep-interview    → 요구사항 수집
 (기획/설계)         → STP, SRS/PRD, Architecture
-/dev-team     → 문서 게이트 포함 자동 개발
+/docs-init test    → 테스트 문서 템플릿 배치
+/dev-team          → 문서 게이트 포함 자동 개발
+/docs-init final   → 최종 문서 템플릿 배치
 ```
 
 ## 스킬 목록
 
 | 스킬 | 용도 |
 |------|------|
-| `/dev-init` | 프로젝트 초기화 (CLAUDE.md + 템플릿 배치) |
+| `/dev-init` | 프로젝트 개발 환경 초기화 (Git, CLAUDE.md, 스킬 설치) |
+| `/docs-init` | 단계별 문서 템플릿 배치 (plan/test/final/all) |
 | `/dev-team` | 문서 게이트 포함 개발 Flow 오케스트레이션 |
 | `/security-report` | 보안 점검 결과 저장 |
 | `/test-report` | 테스트 결과 저장 |
@@ -115,7 +119,8 @@ docs-omc/
 │   ├── pre-compact.mjs
 │   └── post-compact.mjs
 ├── skills/
-│   ├── dev-init/
+│   ├── dev-init/          # 개발 환경 초기화
+│   ├── docs-init/         # 단계별 문서 템플릿 배치
 │   ├── dev-team/
 │   ├── security-report/
 │   ├── test-report/
