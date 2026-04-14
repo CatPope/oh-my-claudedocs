@@ -89,20 +89,31 @@ if (existsSync(findSkillsPath)) {
   warn('find-skills 스킬이 없습니다. OMC 설치를 확인하세요.');
 }
 
-const settingsPath = join(claudeDir, 'settings.json');
+let context7Found = false;
 try {
-  if (existsSync(settingsPath)) {
-    const settings = readFileSync(settingsPath, 'utf8');
-    if (settings.includes('"context7"')) {
-      ok('context7');
-    } else {
-      warn('context7 MCP 서버가 설정되지 않았습니다.');
-    }
-  } else {
-    warn('context7 MCP 서버가 설정되지 않았습니다.');
+  const mcpOutput = execSync('claude mcp list 2>&1', { encoding: 'utf8', timeout: 15000 });
+  if (mcpOutput.includes('context7')) {
+    context7Found = true;
+    ok('context7 (전역 MCP)');
   }
-} catch {
-  warn('settings.json 확인 실패');
+} catch { /* claude mcp list 실패 — 로컬 확인으로 fallback */ }
+
+if (!context7Found) {
+  const localMcp = join(process.cwd(), '.mcp.json');
+  try {
+    if (existsSync(localMcp)) {
+      const mcpJson = readFileSync(localMcp, 'utf8');
+      if (mcpJson.includes('"context7"')) {
+        context7Found = true;
+        ok('context7 (로컬 .mcp.json)');
+      }
+    }
+  } catch { /* .mcp.json 읽기 실패 */ }
+}
+
+if (!context7Found) {
+  warn('context7 MCP 서버가 설정되지 않았습니다.');
+  log('    설치: https://context7.com/');
 }
 
 // ─── 5단계: 커스텀 스킬 설치 ───
