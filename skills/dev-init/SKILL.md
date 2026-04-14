@@ -22,23 +22,56 @@ level: user
 
 # Steps
 
-## 0. Git 확인
+## 0. 권한 설정 (Guardrails)
 
-- `git status`로 Git 초기화 여부 확인
-- Git이 없으면 `git init` + 초기 커밋 제안 (롤백 정책 전제조건)
+### A. 프로젝트 가드레일 (`.claude/settings.json`)
 
-## 1. 자동 승인 모드 설정
+`.claude/settings.json`이 없으면 생성한다. 이미 존재하면 `permissions` 키만 병합한다.
+이 파일은 **Git에 커밋**되어 팀 전체에 적용된다.
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npm test *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout *)",
+      "Bash(git branch *)",
+      "Bash(node -c *)",
+      "Bash(node install.mjs)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)"
+    ]
+  }
+}
+```
+
+> **원칙**: 최소 권한(least-privilege). 안전한 명령만 allow, 위험 명령은 deny.
+> deny는 상위 설정이 우선이므로, 개인이 allow해도 풀리지 않는다.
+
+### B. 개인 자동 승인 (`.claude/settings.local.json`)
 
 사용자에게 권한 자동 승인 여부를 질문한다:
 
 > dev-init 과정에서 파일 생성, 명령 실행 등 다양한 권한 요청이 발생합니다.
 > 모든 요청을 자동 승인하시겠습니까?
-> 1. **예** — 자동 승인 모드 (bypassPermissions)
+> 1. **예** — 자동 승인 모드
 > 2. **아니오** — 매번 수동 확인 (기본값)
 
 **"예" 선택 시:**
 
-`.claude/settings.local.json`에 다음을 작성한다:
+`.claude/settings.local.json`에 다음을 작성한다 (gitignore 대상):
 
 ```json
 {
@@ -59,6 +92,8 @@ level: user
 }
 ```
 
+> 프로젝트 `settings.json`의 deny 규칙은 여전히 적용됩니다.
+
 작성 후 사용자에게 안내한다:
 
 > 자동 승인 설정이 완료되었습니다. **Claude Code를 재시작**하면 적용됩니다.
@@ -68,6 +103,11 @@ level: user
 - 재시작 없이 계속하려면 다음 단계로 진행한다 (매번 수동 확인).
 
 **"아니오" 선택 시:** 다음 단계로 진행한다.
+
+## 1. Git 확인
+
+- `git status`로 Git 초기화 여부 확인
+- Git이 없으면 `git init` + 초기 커밋 제안 (롤백 정책 전제조건)
 
 ## 2. CLAUDE.md 배치
 
