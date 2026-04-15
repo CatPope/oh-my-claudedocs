@@ -62,7 +62,7 @@ try {
 } catch { /* 파일 읽기 실패 시 무시 */ }
 
 if (!context7Found) {
-  warnings.push('context7 MCP 서버가 설정되지 않았습니다. 설치: https://context7.com/');
+  warnings.push('context7 MCP 미설정. https://context7.com/ 에서 토큰 발급 후 /dev-init에서 설정하세요.');
 }
 
 if (warnings.length > 0) {
