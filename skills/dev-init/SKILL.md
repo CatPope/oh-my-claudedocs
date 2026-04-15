@@ -113,6 +113,28 @@ level: user
 - `git status`로 Git 초기화 여부 확인
 - Git이 없으면 `git init` + 초기 커밋 제안 (롤백 정책 전제조건)
 
+### GitHub 권한 파악
+
+GitHub 리모트가 설정되어 있으면 `gh` CLI로 권한을 파악한다:
+
+- `gh repo view --json defaultBranchRef` — 기본 브랜치
+- `gh repo view --json viewerPermission` — 사용자 권한 (ADMIN/MAINTAIN/WRITE/READ)
+- `gh repo view --json mergeCommitAllowed,squashMergeAllowed,rebaseMergeAllowed` — 허용된 머지 방식
+- `gh api repos/{owner}/{repo}/branches/{branch}/protection` — 브랜치 보호 규칙 (PR 필수 여부, 리뷰 필수 여부 등)
+
+파악한 정보를 CLAUDE.md의 `<!-- DOCS-OMC-CONFIG-START -->` 영역에 기록한다:
+
+```markdown
+## GitHub
+
+- 기본 브랜치: main
+- 권한: WRITE
+- 머지 방식: squash, rebase
+- 브랜치 보호: PR 필수, 리뷰 1명 필수
+```
+
+`gh` CLI가 없거나 인증되지 않은 경우 건너뛴다.
+
 ## 2. CLAUDE.md 배치
 
 - 프로젝트 루트에 `CLAUDE.md`가 없으면 `CLAUDE.md.template`를 복사
