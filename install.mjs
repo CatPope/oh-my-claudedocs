@@ -108,8 +108,8 @@ if (!context7Found) {
   const localMcp = join(process.cwd(), '.mcp.json');
   try {
     if (existsSync(localMcp)) {
-      const mcpJson = readFileSync(localMcp, 'utf8');
-      if (mcpJson.includes('"context7"')) {
+      const config = JSON.parse(readFileSync(localMcp, 'utf8'));
+      if (config.mcpServers && config.mcpServers.context7) {
         context7Found = true;
         ok('context7 (로컬 .mcp.json)');
       }
