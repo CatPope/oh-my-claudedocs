@@ -123,7 +123,7 @@ if (!context7Found) {
 
 // ─── 5단계: 커스텀 스킬 설치 ───
 log('[5/5] 스킬 설치...');
-const skills = ['dev-init', 'docs-init', 'dev-team', 'security-report', 'test-report', 'performance-report', 'architecture-doc'];
+const skills = ['dev-init', 'docs-init', 'dev-team', 'doctor-omcd', 'security-report', 'test-report', 'performance-report', 'architecture-doc'];
 for (const skill of skills) {
   const src = join(scriptDir, 'skills', skill);
   const dest = join(skillsDir, skill);
