@@ -68,7 +68,7 @@ if (!context7Found) {
 if (warnings.length > 0) {
   console.log(JSON.stringify({
     continue: true,
-    systemMessage: `[Docs OMC] 경고:\n${warnings.map(w => `- ${w}`).join('\n')}`
+    systemMessage: `[oh-my-claudedocs] 경고:\n${warnings.map(w => `- ${w}`).join('\n')}`
   }));
 } else {
   console.log(JSON.stringify({ continue: true }));

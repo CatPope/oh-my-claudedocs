@@ -19,7 +19,7 @@ let additions = 0;
 let deletions = 0;
 const findings = [];
 
-// docs-omc 전용: 민감 경로 추적
+// omcd 전용: 민감 경로 추적
 const docsDevFiles = [];
 const templateFiles = [];
 const rulesFiles = [];
@@ -55,15 +55,15 @@ for (const line of lines) {
       findings.push("미완료 표시(`TODO`/`FIXME`)가 남아 있습니다.");
     }
 
-    // docs-omc 전용: 문서 목차 L값 누락 감지
+    // omcd 전용: 문서 목차 L값 누락 감지
     if (
       /^##\s+목차/.test(code) &&
       !code.includes("L")
     ) {
-      findings.push("문서 목차에 L값(줄 번호) 표기가 누락되었을 수 있습니다. `docs-omc.md` 규칙 9를 확인하세요.");
+      findings.push("문서 목차에 L값(줄 번호) 표기가 누락되었을 수 있습니다. `omcd.md` 규칙 9를 확인하세요.");
     }
 
-    // docs-omc 전용: 필수 입력 플레이스홀더 감지
+    // omcd 전용: 필수 입력 플레이스홀더 감지
     if (/\[필수 입력\]/.test(code)) {
       findings.push("문서에 `[필수 입력]` 플레이스홀더가 남아 있습니다.");
     }
@@ -83,7 +83,7 @@ if (fileList.length > 0) {
   console.log(`  - 변경 파일: ${fileList.slice(0, 6).join(", ")}`);
 }
 
-// docs-omc 전용: 민감 경로 변경 요약
+// omcd 전용: 민감 경로 변경 요약
 if (docsDevFiles.length > 0) {
   console.log(`  - docs/dev 문서 변경(${docsDevFiles.length}개): ${docsDevFiles.slice(0, 4).join(", ")}`);
 }
@@ -103,7 +103,7 @@ if (uniqueFindings.length === 0) {
   }
 }
 
-// docs-omc 전용: 연쇄 갱신 알림
+// omcd 전용: 연쇄 갱신 알림
 const cascadeWarnings = [];
 if (docsDevFiles.some((f) => f.includes("SRS") || f.includes("PRD"))) {
   cascadeWarnings.push("SRS/PRD 변경 감지 → Architecture, DetailedSpec, test-plan 갱신 필요 여부를 확인하세요.");
@@ -116,7 +116,7 @@ if (rulesFiles.length > 0) {
 }
 
 if (cascadeWarnings.length > 0) {
-  console.log("- 🔗 연쇄 갱신 체크 (docs-omc 규칙 7)");
+  console.log("- 🔗 연쇄 갱신 체크 (omcd 규칙 7)");
   for (const warning of cascadeWarnings) {
     console.log(`  - ${warning}`);
   }

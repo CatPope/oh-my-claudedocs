@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// install.mjs — Docs OMC 통합 설치 스크립트
+// install.mjs — oh-my-claudedocs 통합 설치 스크립트
 // 모든 OS에서 동작: node install.mjs
 // 사전 조건: Node.js v18+, Git, Claude Code CLI
 
@@ -11,7 +11,7 @@ import { homedir } from 'os';
 
 const home = homedir();
 const claudeDir = join(home, '.claude');
-const hooksDir = join(claudeDir, 'hooks', 'docs-omc');
+const hooksDir = join(claudeDir, 'hooks', 'omcd');
 const rulesDir = join(claudeDir, 'rules');
 const skillsDir = join(claudeDir, 'skills');
 const scriptDir = resolve(import.meta.url.replace('file:///', '').replace('file://', ''), '..');
@@ -38,7 +38,7 @@ function copyRecursive(src, dest) {
   }
 }
 
-log('=== Docs OMC 전역 설치 ===\n');
+log('=== oh-my-claudedocs 전역 설치 ===\n');
 
 // ─── 1단계: OMC 설치 확인/설치 ───
 log('[1/5] OMC 설치 확인...');
@@ -58,9 +58,9 @@ try {
 // ─── 2단계: 글로벌 Rules 배치 ───
 log('[2/5] Rules 배치...');
 ensureDir(rulesDir);
-copyFileSync(join(scriptDir, 'rules', 'docs-omc.md'), join(rulesDir, 'docs-omc.md'));
-copyFileSync(join(scriptDir, 'rules', 'docs-omc-ref.md'), join(rulesDir, 'docs-omc-ref.md'));
-ok('docs-omc.md 배치 완료');
+copyFileSync(join(scriptDir, 'rules', 'omcd.md'), join(rulesDir, 'omcd.md'));
+copyFileSync(join(scriptDir, 'rules', 'omcd-ref.md'), join(rulesDir, 'omcd-ref.md'));
+ok('omcd.md 배치 완료');
 
 // ─── 3단계: 사용자 훅 등록 ───
 log('[3/5] 훅 등록...');

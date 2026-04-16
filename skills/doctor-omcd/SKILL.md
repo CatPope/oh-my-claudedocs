@@ -1,17 +1,17 @@
 ---
 name: doctor-omcd
-description: Docs OMC 설치 상태 진단 — 스킬, 훅, 규칙, MCP, 플러그인, 프로젝트 설정 점검
+description: oh-my-claudedocs 설치 상태 진단 — 스킬, 훅, 규칙, MCP, 플러그인, 프로젝트 설정 점검
 argument-hint: ""
 level: user
 ---
 
 # Purpose
 
-Docs OMC의 전역 설치 및 프로젝트 설정 상태를 진단한다. 문제 발견 시 원인과 해결 방법을 안내한다.
+oh-my-claudedocs의 전역 설치 및 프로젝트 설정 상태를 진단한다. 문제 발견 시 원인과 해결 방법을 안내한다.
 
 # Use When
 
-- Docs OMC 설치 후 정상 동작 여부를 확인할 때
+- oh-my-claudedocs 설치 후 정상 동작 여부를 확인할 때
 - 스킬/훅/규칙이 동작하지 않을 때
 - 사용자가 `/doctor-omcd`를 실행할 때
 
@@ -40,14 +40,14 @@ claude plugin list
 
 | 스킬 | 출처 |
 |------|------|
-| `dev-init` | Docs OMC |
-| `docs-init` | Docs OMC |
-| `dev-team` | Docs OMC |
-| `doctor-omcd` | Docs OMC |
-| `security-report` | Docs OMC |
-| `test-report` | Docs OMC |
-| `performance-report` | Docs OMC |
-| `architecture-doc` | Docs OMC |
+| `dev-init` | oh-my-claudedocs |
+| `docs-init` | oh-my-claudedocs |
+| `dev-team` | oh-my-claudedocs |
+| `doctor-omcd` | oh-my-claudedocs |
+| `security-report` | oh-my-claudedocs |
+| `test-report` | oh-my-claudedocs |
+| `performance-report` | oh-my-claudedocs |
+| `architecture-doc` | oh-my-claudedocs |
 | `find-skills` | OMC 플러그인 |
 
 - 파일 존재 → ✓
@@ -55,7 +55,7 @@ claude plugin list
 
 ### 1-3. 훅 설치
 
-`~/.claude/hooks/docs-omc/`에서 다음 파일 존재 여부를 확인한다:
+`~/.claude/hooks/omcd/`에서 다음 파일 존재 여부를 확인한다:
 
 - `session-start.mjs`
 - `pre-commit-check.mjs`
@@ -73,8 +73,8 @@ claude plugin list
 
 `~/.claude/rules/`에서 다음 파일 존재 여부를 확인한다:
 
-- `docs-omc.md`
-- `docs-omc-ref.md`
+- `omcd.md`
+- `omcd-ref.md`
 
 - 존재 → ✓
 - 없음 → ✗ `node install.mjs` 재실행 안내
@@ -126,7 +126,7 @@ claude plugin list
 진단 결과를 요약한다:
 
 ```
-=== Docs OMC 진단 결과 ===
+=== oh-my-claudedocs 진단 결과 ===
 
 [전역 설치]
   ✓ OMC 플러그인 (v4.11.2, enabled)

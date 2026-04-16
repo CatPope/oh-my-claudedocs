@@ -7,12 +7,12 @@ level: user
 
 # Purpose
 
-새 프로젝트에 Docs OMC 개발 환경을 세팅한다. CLAUDE.md 배치, 필요한 외부 스킬 탐색/설치, 프로젝트 규모에 따라 SRS 또는 PRD를 선택한다. 문서 템플릿 배치는 `/docs-init`으로 분리되어 있다.
+새 프로젝트에 oh-my-claudedocs 개발 환경을 세팅한다. CLAUDE.md 배치, 필요한 외부 스킬 탐색/설치, 프로젝트 규모에 따라 SRS 또는 PRD를 선택한다. 문서 템플릿 배치는 `/docs-init`으로 분리되어 있다.
 
 # Use When
 
 - 새 프로젝트를 시작할 때
-- 기존 프로젝트에 Docs OMC를 도입할 때
+- 기존 프로젝트에 oh-my-claudedocs를 도입할 때
 - 사용자가 `/dev-init`을 실행할 때
 
 # Do Not Use When
@@ -179,7 +179,7 @@ GitHub 리모트가 설정되어 있으면 `gh` CLI로 권한을 파악한다:
 문서가 발견되면 각 파일에 대해 사용자에게 질문한다:
 
 > `docs/PRD_v2.md` 파일을 발견했습니다.
-> 1. **개발 문서로 사용** — Docs OMC 워크플로에 연동
+> 1. **개발 문서로 사용** — oh-my-claudedocs 워크플로에 연동
 > 2. **참고 자료** — context로만 활용
 > 3. **건너뛰기** — 관련 없는 파일
 
