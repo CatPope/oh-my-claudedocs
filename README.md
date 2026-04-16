@@ -24,7 +24,7 @@ node install.mjs  # 전역 설치
 2. `~/.claude/rules/omcd.md` 배치
 3. `~/.claude/hooks/omcd/*.mjs` 배치 + settings.json 훅 등록
 4. 기본 스킬 확인 (find-skills, context7)
-5. 커스텀 스킬 7개 설치 (`~/.agents/skills/`)
+5. 커스텀 스킬 8개 설치 (`~/.agents/skills/`)
 
 ## 사용법
 
@@ -47,13 +47,14 @@ cd my-project && claude
 /docs-init final   → 최종 문서 템플릿 배치
 ```
 
-## 스킬 목록 (7개)
+## 스킬 목록 (8개)
 
 | 스킬 | 용도 |
 |------|------|
 | `/dev-init` | 프로젝트 개발 환경 초기화 (Git, CLAUDE.md, 스킬, GitHub 연동) |
 | `/docs-init` | 단계별 문서 템플릿 배치 (plan/test/final/all) |
 | `/dev-team` | 문서 게이트 포함 개발 Flow 오케스트레이션 |
+| `/doctor-omcd` | oh-my-claudedocs 설치 상태 진단 |
 | `/security-report` | 보안 점검 결과 저장 |
 | `/test-report` | 테스트 결과 저장 |
 | `/performance-report` | 성능 벤치마크 결과 저장 |
