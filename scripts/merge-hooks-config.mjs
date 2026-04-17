@@ -1,4 +1,4 @@
-// merge-hooks-config.mjs — settings.json에 Docs OMC 훅을 안전 병합
+// merge-hooks-config.mjs — settings.json에 oh-my-claudedocs 훅을 안전 병합
 // 기존 설정 보존, 동일 이벤트에 append, 중복 방지 (멱등성)
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
@@ -8,9 +8,9 @@ const home = process.env.HOME || process.env.USERPROFILE || '';
 const claudeDir = join(home, '.claude');
 const settingsPath = join(claudeDir, 'settings.json');
 
-// Docs OMC 훅 정의
-const hooksDir = join(home, '.claude', 'hooks', 'docs-omc');
-const docsOmcHooks = {
+// oh-my-claudedocs 훅 정의
+const hooksDir = join(home, '.claude', 'hooks', 'omcd');
+const omcdHooks = {
   SessionStart: [
     {
       matcher: '',
@@ -29,6 +29,30 @@ const docsOmcHooks = {
         command: `node ${hooksDir}/pre-commit-check.mjs`.replace(/\\/g, '/'),
         timeout: 10
       }]
+    },
+    {
+      matcher: 'Bash',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/conventional-commit.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
+    },
+    {
+      matcher: 'Bash',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/pr-push-check.mjs`.replace(/\\/g, '/'),
+        timeout: 8
+      }]
+    },
+    {
+      matcher: 'Write|Edit',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/claude-md-limit.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
     }
   ],
   PostToolUse: [
@@ -38,6 +62,14 @@ const docsOmcHooks = {
         type: 'command',
         command: `node ${hooksDir}/post-save-mmd.mjs`.replace(/\\/g, '/'),
         timeout: 15
+      }]
+    },
+    {
+      matcher: 'Write|Edit',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/docs-header-check.mjs`.replace(/\\/g, '/'),
+        timeout: 5
       }]
     }
   ],
@@ -89,7 +121,7 @@ if (!settings.hooks) {
 }
 
 // 3. 각 이벤트별로 append (중복 방지)
-for (const [event, entries] of Object.entries(docsOmcHooks)) {
+for (const [event, entries] of Object.entries(omcdHooks)) {
   if (!settings.hooks[event]) {
     settings.hooks[event] = [];
   }
