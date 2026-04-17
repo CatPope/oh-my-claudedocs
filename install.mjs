@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// install.mjs — Docs OMC 통합 설치 스크립트
+// install.mjs — oh-my-claudedocs 통합 설치 스크립트
 // 모든 OS에서 동작: node install.mjs
 // 사전 조건: Node.js v18+, Git, Claude Code CLI
 
@@ -11,7 +11,7 @@ import { homedir } from 'os';
 
 const home = homedir();
 const claudeDir = join(home, '.claude');
-const hooksDir = join(claudeDir, 'hooks', 'docs-omc');
+const hooksDir = join(claudeDir, 'hooks', 'omcd');
 const rulesDir = join(claudeDir, 'rules');
 const agentsDir = join(home, '.agents', 'skills');
 const scriptDir = resolve(import.meta.url.replace('file:///', '').replace('file://', ''), '..');
@@ -38,7 +38,7 @@ function copyRecursive(src, dest) {
   }
 }
 
-log('=== Docs OMC 전역 설치 ===\n');
+log('=== oh-my-claudedocs 전역 설치 ===\n');
 
 // ─── 1단계: OMC 설치 확인/설치 ───
 log('[1/5] OMC 설치 확인...');
@@ -55,12 +55,11 @@ try {
   warn('OMC 설치 확인 실패. Claude Code CLI를 확인하세요.');
 }
 
-// ─── 2단계: 글로벌 Rules 배치 ───
-log('[2/5] Rules 배치...');
-ensureDir(rulesDir);
-copyFileSync(join(scriptDir, 'rules', 'docs-omc.md'), join(rulesDir, 'docs-omc.md'));
-copyFileSync(join(scriptDir, 'rules', 'docs-omc-ref.md'), join(rulesDir, 'docs-omc-ref.md'));
-ok('docs-omc.md 배치 완료');
+// ─── 2단계: Rules (글로벌 배치 제거됨) ───
+// Rules는 /dev-init 시점에 프로젝트별 .claude/rules/에 배치한다.
+// 글로벌 ~/.claude/rules/에는 더 이상 복사하지 않는다.
+log('[2/5] Rules — 프로젝트별 배치로 변경됨 (글로벌 설치 생략)');
+ok('Rules는 /dev-init에서 프로젝트별로 배치합니다');
 
 // ─── 3단계: 사용자 훅 등록 ───
 log('[3/5] 훅 등록...');

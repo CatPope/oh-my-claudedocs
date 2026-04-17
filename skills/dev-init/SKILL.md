@@ -7,12 +7,12 @@ level: user
 
 # Purpose
 
-새 프로젝트에 Docs OMC 개발 환경을 세팅한다. CLAUDE.md 배치, 필요한 외부 스킬 탐색/설치, 프로젝트 규모에 따라 SRS 또는 PRD를 선택한다. 문서 템플릿 배치는 `/docs-init`으로 분리되어 있다.
+새 프로젝트에 oh-my-claudedocs 개발 환경을 세팅한다. CLAUDE.md 배치, 필요한 외부 스킬 탐색/설치, 프로젝트 규모에 따라 SRS 또는 PRD를 선택한다. 문서 템플릿 배치는 `/docs-init`으로 분리되어 있다.
 
 # Use When
 
 - 새 프로젝트를 시작할 때
-- 기존 프로젝트에 Docs OMC를 도입할 때
+- 기존 프로젝트에 oh-my-claudedocs를 도입할 때
 - 사용자가 `/dev-init`을 실행할 때
 
 # Do Not Use When
@@ -33,9 +33,12 @@ level: user
 - 이미 존재하면 건너뜀 (멱등성)
 - `<!-- DOCS-OMC-CONFIG-START -->` ~ `<!-- DOCS-OMC-CONFIG-END -->` 영역으로 OMC 설정과 분리
 
-## 2. .claude/compact.md 배치
+## 2. .claude/compact.md + Rules 배치
 
 - `.claude/compact.md` 배치 (compact 시 상태 기록용)
+- `.claude/rules/omcd.md`, `.claude/rules/omcd-ref.md` 배치 (프로젝트별 규칙)
+  - 이미 존재하면 건너뜀 (멱등성)
+  - 글로벌 `~/.claude/rules/`에는 배치하지 않음 (컨텍스트 절약)
 - `.claude/` 디렉토리는 Claude Code가 자동 생성
 
 ## 3. 외부 스킬 탐색/설치
