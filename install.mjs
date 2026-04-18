@@ -65,7 +65,7 @@ ok('docs-omc.md 배치 완료');
 // ─── 3단계: 사용자 훅 등록 ───
 log('[3/5] 훅 등록...');
 ensureDir(hooksDir);
-for (const hook of ['session-start.mjs', 'pre-commit-check.mjs', 'post-save-mmd.mjs', 'pre-compact.mjs', 'post-compact.mjs']) {
+for (const hook of ['session-start.mjs', 'pre-commit-check.mjs', 'post-save-mmd.mjs', 'pre-compact.mjs', 'post-compact.mjs', 'intent-drift-check.mjs', 'doc-update-check.mjs']) {
   copyFileSync(join(scriptDir, 'hooks', hook), join(hooksDir, hook));
 }
 ok('훅 파일 복사 완료');
@@ -107,7 +107,7 @@ try {
 
 // ─── 5단계: 커스텀 스킬 설치 ───
 log('[5/5] 스킬 설치...');
-const skills = ['dev-init', 'docs-init', 'dev-team', 'security-report', 'test-report', 'performance-report', 'architecture-doc'];
+const skills = ['dev-init', 'docs-init', 'dev-team', 'security-report', 'test-report', 'performance-report', 'architecture-doc', 'doc-review'];
 for (const skill of skills) {
   const src = join(scriptDir, 'skills', skill);
   const dest = join(agentsDir, skill);

@@ -29,6 +29,22 @@ const docsOmcHooks = {
         command: `node ${hooksDir}/pre-commit-check.mjs`.replace(/\\/g, '/'),
         timeout: 10
       }]
+    },
+    {
+      matcher: 'Bash',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/doc-update-check.mjs`.replace(/\\/g, '/'),
+        timeout: 10
+      }]
+    },
+    {
+      matcher: '',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/intent-drift-check.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
     }
   ],
   PostToolUse: [

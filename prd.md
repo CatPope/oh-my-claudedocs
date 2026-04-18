@@ -25,7 +25,11 @@ docs-omc/
 ├── hooks/                              # settings.json 사용자 훅 (.mjs)
 │   ├── session-start.mjs               # OMC, skills 확인
 │   ├── pre-commit-check.mjs            # 린트/포맷 (git commit 감지)
-│   └── post-save-mmd.mjs              # 머메이드 → 이미지 변환
+│   ├── post-save-mmd.mjs              # 머메이드 → 이미지 변환
+│   ├── pre-compact.mjs                 # compact 전 상태 저장 + .claudeignore 해제 + git 캡처
+│   ├── post-compact.mjs                # compact 후 복구 + .claudeignore 복원
+│   ├── intent-drift-check.mjs          # 시나리오 이탈 감지 (자동화 워크플로우)
+│   └── doc-update-check.mjs            # git commit 시 문서 갱신 필요 알림
 ├── skills/
 │   ├── dev-init/                       # 프로젝트 초기화 스킬
 │   │   ├── SKILL.md
@@ -64,7 +68,9 @@ docs-omc/
 │   │   └── SKILL.md
 │   ├── performance-report/            # 성능 Test 래퍼 → 파일 저장
 │   │   └── SKILL.md
-│   └── architecture-doc/              # Architecture.md 생성
+│   ├── architecture-doc/              # Architecture.md 생성
+│   │   └── SKILL.md
+│   └── doc-review/                    # 문서 일관성·결정 탈선·흐름 정합성 검토
 │       └── SKILL.md
 └── README.md
 ```
@@ -120,7 +126,7 @@ echo "[4/5] 기본 스킬 확인..."
 # ─── 5단계: dev-init 스킬 및 래퍼 스킬 설치 ───
 echo "[5/5] 스킬 설치..."
 SKILLS_DIR=~/.agents/skills
-for skill in dev-init dev-team security-report test-report performance-report architecture-doc; do
+for skill in dev-init dev-team security-report test-report performance-report architecture-doc doc-review; do
   mkdir -p "$SKILLS_DIR/$skill"
   cp -r "skills/$skill/"* "$SKILLS_DIR/$skill/"
 done
@@ -306,6 +312,7 @@ if (filePath.endsWith('.mmd')) {
 | `test-report` | 테스트 결과 저장 | `test-engineer` + `verifier` 에이전트 래퍼 → `docs/dev/test-results/test-YYYY-MM-DD.md` |
 | `architecture-doc` | Architecture 문서 생성 | 시스템 개요, 모듈/레이어, 데이터 흐름, 인프라 토폴로지 → `docs/dev/Architecture.md` |
 | `performance-report` | 성능 벤치마크 결과 저장 | 성능 Test 스킬 래퍼 → `docs/dev/performance/performance-YYYY-MM-DD.md` |
+| `doc-review` | 문서 일관성·결정 탈선·흐름 정합성 검토 | 전체 문서 인벤토리 → 일관성·탈선·미래 방향성 보고서 출력 |
 
 > 읽기전용 에이전트(`security-reviewer`, `code-reviewer`, `verifier`)는 콘솔 출력만 하므로, 래퍼 스킬이 출력을 캡처하여 날짜별 파일로 저장한다.
 
