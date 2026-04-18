@@ -73,6 +73,70 @@ jobs:
           echo "templates_changed=${templates_changed}" >> "$GITHUB_OUTPUT"
           echo "rules_changed=${rules_changed}" >> "$GITHUB_OUTPUT"
 
+      - name: Conventional Commits check
+        id: commit_check
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          TYPES="feat|fix|docs|refactor|chore|test|style|perf|ci|build|revert"
+          BAD=""
+          while IFS= read -r line; do
+            SUBJECT=$(echo "$line" | sed 's/^[a-f0-9]* //')
+            if ! echo "$SUBJECT" | grep -qE "^($TYPES)(\([a-z][a-z0-9-]*\))?(!)?: .{1,50}"; then
+              BAD="${BAD}\n- \`${line}\`"
+            fi
+          done <<< "$(git log --oneline origin/${BASE_REF}..${HEAD_SHA})"
+          if [ -n "$BAD" ]; then
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+            printf '%b' "$BAD" > commit-violations.txt
+          else
+            echo "status=pass" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: CLAUDE.md line count check
+        id: claudemd_check
+        run: |
+          if [ -f CLAUDE.md ]; then
+            LINES=$(wc -l < CLAUDE.md)
+            if [ "$LINES" -gt 300 ]; then
+              echo "status=fail" >> "$GITHUB_OUTPUT"
+              echo "lines=$LINES" >> "$GITHUB_OUTPUT"
+            else
+              echo "status=pass" >> "$GITHUB_OUTPUT"
+              echo "lines=$LINES" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "status=skip" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: JS syntax validation
+        id: js_check
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          JS_FILES=$(git diff --name-only origin/${BASE_REF}..${HEAD_SHA} -- '*.mjs' '*.js' || true)
+          BAD=""
+          COUNT=0
+          for f in $JS_FILES; do
+            if [ -f "$f" ]; then
+              COUNT=$((COUNT + 1))
+              if ! node --check "$f" 2>/dev/null; then
+                BAD="${BAD}\n- \`${f}\`"
+              fi
+            fi
+          done
+          if [ -n "$BAD" ]; then
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+            printf '%b' "$BAD" > js-violations.txt
+          else
+            echo "status=pass" >> "$GITHUB_OUTPUT"
+          fi
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+
       - name: Review with Fallback
         env:
           DIFF_PATH: ${{ steps.diff.outputs.diff_path }}
@@ -83,27 +147,72 @@ jobs:
           DOCS_DEV_CHANGED: ${{ steps.path_flags.outputs.docs_dev_changed }}
           TEMPLATES_CHANGED: ${{ steps.path_flags.outputs.templates_changed }}
           RULES_CHANGED: ${{ steps.path_flags.outputs.rules_changed }}
+          COMMIT_CHECK: ${{ steps.commit_check.outputs.status }}
+          CLAUDEMD_CHECK: ${{ steps.claudemd_check.outputs.status }}
+          CLAUDEMD_LINES: ${{ steps.claudemd_check.outputs.lines }}
+          JS_CHECK: ${{ steps.js_check.outputs.status }}
+          JS_COUNT: ${{ steps.js_check.outputs.count }}
         run: |
           {
-            echo "## 🤖 AI CI 리뷰 결과"
+            echo "## AI CI 리뷰 결과"
             echo
-            echo "- 실행 모드: 자동 PR(Fallback only)"
-            echo "- 상세 AI 리뷰는 GitHub App에서 \`/gemini review\`, \`@coderabbitai review\`로 요청하세요."
-            echo "- 요청 시 한국어 응답을 원하면 \`한국어(ko-KR)로 리뷰해주세요\` 문구를 함께 남겨주세요."
+            echo "### 자동 검증"
+            echo
+            echo "| 항목 | 결과 |"
+            echo "|------|------|"
+
+            # Conventional Commits
+            if [ "${COMMIT_CHECK}" = "pass" ]; then
+              echo "| Conventional Commits | PASS |"
+            else
+              echo "| Conventional Commits | **FAIL** |"
+            fi
+
+            # CLAUDE.md
+            if [ "${CLAUDEMD_CHECK}" = "pass" ]; then
+              echo "| CLAUDE.md 줄 수 | PASS (${CLAUDEMD_LINES}/300) |"
+            elif [ "${CLAUDEMD_CHECK}" = "fail" ]; then
+              echo "| CLAUDE.md 줄 수 | **FAIL** (${CLAUDEMD_LINES}/300) |"
+            else
+              echo "| CLAUDE.md 줄 수 | SKIP (파일 없음) |"
+            fi
+
+            # JS syntax
+            if [ "${JS_CHECK}" = "pass" ]; then
+              echo "| JS 구문 검증 | PASS (${JS_COUNT}개) |"
+            elif [ "${JS_CHECK}" = "fail" ]; then
+              echo "| JS 구문 검증 | **FAIL** |"
+            else
+              echo "| JS 구문 검증 | SKIP |"
+            fi
             echo
 
-            # docs-omc 전용: 민감 경로 변경 플래그
+            # 커밋 위반 상세
+            if [ "${COMMIT_CHECK}" = "fail" ] && [ -f commit-violations.txt ]; then
+              echo "#### Conventional Commits 위반"
+              cat commit-violations.txt
+              echo
+            fi
+
+            # JS 위반 상세
+            if [ "${JS_CHECK}" = "fail" ] && [ -f js-violations.txt ]; then
+              echo "#### JS 구문 오류"
+              cat js-violations.txt
+              echo
+            fi
+
+            # 민감 경로 변경
             if [ "${DOCS_DEV_CHANGED}" = "true" ] || [ "${TEMPLATES_CHANGED}" = "true" ] || [ "${RULES_CHANGED}" = "true" ]; then
-              echo "### ⚠️ 문서 변경 감지 — 추가 검토 필요"
+              echo "### 문서 변경 감지 — 추가 검토 필요"
               echo
               if [ "${DOCS_DEV_CHANGED}" = "true" ]; then
-                echo "- \`docs/dev/*\` 변경: 프로젝트 문서가 수정되었습니다. 목차 L값 및 연쇄 갱신 여부를 확인하세요."
+                echo "- \`docs/dev/*\` 변경: 목차 L값 및 연쇄 갱신 여부를 확인하세요."
               fi
               if [ "${TEMPLATES_CHANGED}" = "true" ]; then
-                echo "- \`skills/dev-init/templates/docs/dev/*\` 변경: 문서 템플릿이 수정되었습니다. 기존 프로젝트 문서와 호환성을 확인하세요."
+                echo "- \`templates/docs/dev/*\` 변경: 기존 프로젝트 문서와 호환성을 확인하세요."
               fi
               if [ "${RULES_CHANGED}" = "true" ]; then
-                echo "- \`rules/*\` 변경: 글로벌 규칙이 수정되었습니다. \`docs-omc.md\` / \`docs-omc-ref.md\` 일관성 및 CLAUDE.md 영향 여부를 확인하세요."
+                echo "- \`rules/*\` 변경: \`omcd.md\` / \`omcd-ref.md\` 일관성 및 CLAUDE.md 영향을 확인하세요."
               fi
               echo
             fi
@@ -112,7 +221,7 @@ jobs:
             cat fallback-review.md
             echo
             echo "---"
-            echo "_자동 생성 코멘트입니다. 필요 시 사람이 최종 확인하세요._"
+            echo "_자동 생성 코멘트입니다. 상세 AI 리뷰: \`/gemini review\` 또는 \`@coderabbitai review\`_"
           } > ai-review-comment.md
 
       - name: Find existing AI comment
