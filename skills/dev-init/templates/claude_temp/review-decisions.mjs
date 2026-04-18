@@ -5,7 +5,7 @@
 // 사용법: node claude_temp/review-decisions.mjs
 
 import { readFileSync, existsSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { join, basename } from 'path';
 
 const docsDir = 'docs/dev';
 const adrDir = join(docsDir, 'adr');
