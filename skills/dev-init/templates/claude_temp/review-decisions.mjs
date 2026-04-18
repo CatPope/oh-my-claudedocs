@@ -42,7 +42,7 @@ for (const file of specFiles) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     if (/결정|선택|채택|사용한다|적용한다|must|shall/i.test(line) && line.trim().length > 10) {
-      decisions.push({ file: file.split('/').pop(), line: i + 1, text: line.trim().slice(0, 80) });
+      decisions.push({ file: basename(file), line: i + 1, text: line.trim().slice(0, 80) });
     }
   }
 }
