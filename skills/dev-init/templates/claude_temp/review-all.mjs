@@ -29,7 +29,7 @@ for (const script of scripts) {
 
   console.log(`${'─'.repeat(50)}`);
   try {
-    const output = execSync(`node ${script.file}`, { encoding: 'utf8', timeout: 15000 });
+    const output = execSync(`node "${script.file}"`, { encoding: 'utf8', timeout: 30000 });
     console.log(output);
     results.push({ name: script.name, status: 'OK' });
   } catch (e) {
