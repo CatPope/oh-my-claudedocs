@@ -33,12 +33,14 @@ level: user
 - 이미 존재하면 건너뜀 (멱등성)
 - `<!-- DOCS-OMC-CONFIG-START -->` ~ `<!-- DOCS-OMC-CONFIG-END -->` 영역으로 OMC 설정과 분리
 
-## 2. .claude/compact.md + Rules 배치
+## 2. .claude/compact.md + Rules + claude_temp/ 배치
 
 - `.claude/compact.md` 배치 (compact 시 상태 기록용)
 - `.claude/rules/omcd.md`, `.claude/rules/omcd-ref.md` 배치 (프로젝트별 규칙)
   - 이미 존재하면 건너뜀 (멱등성)
   - 글로벌 `~/.claude/rules/`에는 배치하지 않음 (컨텍스트 절약)
+- `claude_temp/` 디렉토리 생성 (스크립트 우선 실행 원칙용 작업 디렉토리)
+  - `.gitignore`에 `claude_temp/` 추가 (커밋 대상 아님)
 - `.claude/` 디렉토리는 Claude Code가 자동 생성
 
 ## 3. 외부 스킬 탐색/설치
