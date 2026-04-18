@@ -40,7 +40,7 @@ cd my-project && claude
 ### 전체 개발 Flow
 
 ```
-/dev-init          → 개발 환경 초기화 (Git, CLAUDE.md, Rules, 스킬)
+/dev-init          → 개발 환경 초기화 (Git, CLAUDE.md, Rules, claude_temp/, 스킬)
 /docs-init plan    → 기획/설계 문서 템플릿 배치
 /deep-interview    → 요구사항 수집
 (기획/설계)         → STP, SRS/PRD, Architecture
@@ -84,6 +84,21 @@ cd my-project && claude
 | `docs-header-check.mjs` | PostToolUse (Write\|Edit) | docs 15줄 헤더 + L값 목차 정합성 검증 | systemMessage |
 
 > **하네스 vs 규칙**: 하네스 훅은 코드로 자동 강제되므로 Rules 파일에 중복 기술할 필요 없이 컨텍스트를 절약한다.
+
+## 스크립트 우선 실행 원칙
+
+Claude는 가능한 모든 작업을 직접 수행하지 않고, **스크립트를 `claude_temp/`에 작성 → 실행**한다.
+
+- `/dev-init` 시 `claude_temp/` 디렉토리 자동 생성 (`.gitignore` 등록)
+- 단순 1줄 명령(예: `git status`)은 예외로 직접 실행 가능
+
+### 사전 배치 유틸
+
+| 스크립트 | 용도 |
+|----------|------|
+| `check-cascade.mjs` | 변경 파일 기반 연쇄 갱신 대상 확인 |
+| `check-doc-status.mjs` | 필수/선택 문서 존재 여부 + 날짜 파일명 검증 |
+| `check-all-doc-headers.mjs` | 전체 docs/ 15줄 헤더 + L값 목차 배치 검증 |
 
 ## CI/CD
 
@@ -139,7 +154,9 @@ oh-my-claudedocs/
 │   └── docs-header-check.mjs    # 하네스: docs 헤더 검증
 ├── skills/
 │   ├── dev-init/          # 개발 환경 초기화
-│   │   └── templates/.claude/rules/  # omcd*.md 프로젝트별 배치용
+│   │   └── templates/
+│   │       ├── .claude/rules/     # omcd*.md 프로젝트별 배치용
+│   │       └── claude_temp/       # 사전 배치 유틸 스크립트
 │   ├── docs-init/         # 단계별 문서 템플릿 배치
 │   ├── dev-team/
 │   ├── doctor-omcd/       # 설치 상태 진단
