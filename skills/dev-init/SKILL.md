@@ -31,7 +31,7 @@ level: user
 
 - 프로젝트 루트에 `CLAUDE.md`가 없으면 `CLAUDE.md.template`를 복사
 - 이미 존재하면 건너뜀 (멱등성)
-- `<!-- DOCS-OMC-CONFIG-START -->` ~ `<!-- DOCS-OMC-CONFIG-END -->` 영역으로 OMC 설정과 분리
+- `<!-- OMCD-CONFIG-START -->` ~ `<!-- OMCD-CONFIG-END -->` 영역으로 OMC 설정과 분리
 
 ## 2. .claude/compact.md + Rules + claude_temp/ 배치
 
