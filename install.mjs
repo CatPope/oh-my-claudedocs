@@ -91,20 +91,19 @@ if (existsSync(findSkillsPath)) {
   warn('find-skills 스킬이 없습니다. OMC 설치를 확인하세요.');
 }
 
-const settingsPath = join(claudeDir, 'settings.json');
-try {
-  if (existsSync(settingsPath)) {
-    const settings = readFileSync(settingsPath, 'utf8');
-    if (settings.includes('"context7"')) {
-      ok('context7');
-    } else {
-      warn('context7 MCP 서버가 설정되지 않았습니다.');
-    }
-  } else {
-    warn('context7 MCP 서버가 설정되지 않았습니다.');
-  }
-} catch {
-  warn('settings.json 확인 실패');
+const mcpConfigPaths = [
+  join(claudeDir, 'settings.json'),
+  join(home, '.claude.json'),
+];
+const context7Found = mcpConfigPaths.some(p => {
+  try {
+    return existsSync(p) && readFileSync(p, 'utf8').includes('"context7"');
+  } catch { return false; }
+});
+if (context7Found) {
+  ok('context7');
+} else {
+  warn('context7 MCP 서버가 설정되지 않았습니다.');
 }
 
 // ─── 5단계: 커스텀 스킬 설치 ───

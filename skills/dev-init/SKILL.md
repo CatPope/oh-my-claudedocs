@@ -22,10 +22,21 @@ level: user
 
 # Steps
 
-## 0. Git 확인
+## 0. Git 저장소 설정
 
 - `git status`로 Git 초기화 여부 확인
-- Git이 없으면 `git init` + 초기 커밋 제안 (롤백 정책 전제조건)
+- Git이 이미 초기화되어 있으면 건너뜀
+- Git이 없으면 사용자에게 질문한다:
+
+> Git 저장소를 설정합니다. 어떻게 진행할까요?
+> 1. **GitHub 원격 저장소 생성** — `gh repo create`로 원격 + 로컬 동시 설정
+> 2. **로컬 저장소만** — `git init`으로 로컬만 초기화
+> 3. **건너뛰기** — Git 없이 진행 (롤백 기능 제한)
+
+선택에 따라:
+- **1번**: `gh repo create <project-name> --private --source=. --push` 실행. public/private 여부도 확인
+- **2번**: `git init` + `.gitignore` 배치 + 초기 커밋
+- **3번**: 경고 출력 후 다음 단계로 진행 (문서 롤백 불가 안내)
 
 ## 1. CLAUDE.md 배치
 
