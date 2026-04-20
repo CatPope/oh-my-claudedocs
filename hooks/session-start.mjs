@@ -33,21 +33,25 @@ try {
   warnings.push('find-skills 확인 실패.');
 }
 
-// 3. context7 MCP 확인 (settings.json에서 mcpServers 확인)
+// 3. context7 MCP 확인 (settings.json 또는 ~/.claude.json)
 try {
   const { readFileSync, existsSync } = await import('fs');
   const { join } = await import('path');
   const home = process.env.HOME || process.env.USERPROFILE || '';
-  const settingsPath = join(home, '.claude', 'settings.json');
-  if (existsSync(settingsPath)) {
-    const settings = JSON.parse(readFileSync(settingsPath, 'utf8'));
-    const mcpServers = settings.mcpServers || {};
-    if (!mcpServers.context7) {
-      warnings.push('context7 MCP 서버가 설정되지 않았습니다.');
-    }
+  const mcpConfigPaths = [
+    join(home, '.claude', 'settings.json'),
+    join(home, '.claude.json'),
+  ];
+  const found = mcpConfigPaths.some(p => {
+    try {
+      return existsSync(p) && readFileSync(p, 'utf8').includes('"context7"');
+    } catch { return false; }
+  });
+  if (!found) {
+    warnings.push('context7 MCP 서버가 설정되지 않았습니다.');
   }
 } catch {
-  // settings.json 파싱 실패 시 무시
+  // 설정 파일 확인 실패 시 무시
 }
 
 if (warnings.length > 0) {
