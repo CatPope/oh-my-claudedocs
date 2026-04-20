@@ -2,7 +2,7 @@
 // OMC, find-skills, context7 존재 확인. 없으면 경고.
 
 import { execSync } from 'child_process';
-import { parseHookInput, info } from './_parse-input.mjs';
+import { parseHookInput, pass, info } from './_parse-input.mjs';
 
 // SessionStart 훅은 input이 없을 수 있지만 프로토콜 준수를 위해 읽는다
 // JSON 파싱 결과는 이 훅에서 사용하지 않음
