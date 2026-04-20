@@ -39,7 +39,9 @@ function copyRecursive(src, dest) {
   }
 }
 
-log('=== Docs OMC 전역 설치 ===\n');
+// 설치/업데이트 판별
+const isUpdate = existsSync(join(hooksDir, 'session-start.mjs'));
+log(`=== Docs OMC 전역 ${isUpdate ? '업데이트' : '설치'} ===\n`);
 
 // ─── 1단계: OMC 설치 확인/설치 ───
 log('[1/5] OMC 설치 확인...');
@@ -62,7 +64,7 @@ ensureDir(rulesDir);
 ensureDir(docsDir);
 copyFileSync(join(scriptDir, 'rules', 'docs-omc.md'), join(rulesDir, 'docs-omc.md'));
 copyFileSync(join(scriptDir, 'rules', 'docs-omc-ref.md'), join(docsDir, 'docs-omc-ref.md'));
-ok('docs-omc.md → rules/, docs-omc-ref.md → docs/ 배치 완료');
+ok(`docs-omc.md → rules/, docs-omc-ref.md → docs/ ${isUpdate ? '갱신' : '배치'} 완료`);
 
 // ─── 3단계: 사용자 훅 등록 ───
 log('[3/5] 훅 등록...');
@@ -70,7 +72,7 @@ ensureDir(hooksDir);
 for (const hook of ['_parse-input.mjs', 'session-start.mjs', 'pre-commit-check.mjs', 'post-save-mmd.mjs', 'pre-compact.mjs', 'post-compact.mjs', 'intent-drift-check.mjs', 'doc-update-check.mjs']) {
   copyFileSync(join(scriptDir, 'hooks', hook), join(hooksDir, hook));
 }
-ok('훅 파일 복사 완료');
+ok(`훅 파일 ${isUpdate ? '갱신' : '복사'} 완료`);
 
 try {
   execFileSync('node', [join(scriptDir, 'scripts', 'merge-hooks-config.mjs')], {
@@ -113,8 +115,8 @@ for (const skill of skills) {
   const src = join(scriptDir, 'skills', skill);
   const dest = join(agentsDir, skill);
   copyRecursive(src, dest);
-  ok(`${skill} 설치됨`);
+  ok(`${skill} ${isUpdate ? '갱신' : '설치'}됨`);
 }
 
-log('\n=== 설치 완료 ===');
+log(`\n=== ${isUpdate ? '업데이트' : '설치'} 완료 ===`);
 log('프로젝트 초기화: 프로젝트 디렉토리에서 /dev-init 실행');
