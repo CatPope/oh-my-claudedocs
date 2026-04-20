@@ -24,7 +24,7 @@ node install.mjs  # 전역 설치
 2. `~/.claude/rules/docs-omc.md` 배치
 3. `~/.claude/hooks/docs-omc/*.mjs` 배치 + settings.json 훅 등록
 4. 기본 스킬 확인 (find-skills, context7)
-5. 커스텀 스킬 7개 설치 (`~/.agents/skills/`)
+5. 커스텀 스킬 8개 설치 (`~/.agents/skills/`)
 
 ## 사용법
 
@@ -47,7 +47,7 @@ cd my-project && claude
 /docs-init final   → 최종 문서 템플릿 배치
 ```
 
-## 스킬 목록 (7개)
+## 스킬 목록 (8개)
 
 | 스킬 | 용도 |
 |------|------|
@@ -58,16 +58,19 @@ cd my-project && claude
 | `/test-report` | 테스트 결과 저장 |
 | `/performance-report` | 성능 벤치마크 결과 저장 |
 | `/architecture-doc` | Architecture 문서 생성 |
+| `/doc-review` | 문서 일관성·결정 탈선·흐름 정합성 검토 |
 
-## 훅 목록 (5개)
+## 훅 목록 (7개)
 
 | 훅 | 이벤트 | 동작 |
 |----|--------|------|
 | `session-start.mjs` | SessionStart | OMC + 스킬 + context7 존재 확인 |
 | `pre-commit-check.mjs` | PreToolUse (Bash) | git commit 시 린트/포맷 검사 |
 | `post-save-mmd.mjs` | PostToolUse (Write) | .mmd 파일 → PNG 변환 |
-| `pre-compact.mjs` | PreCompact | compact 전 상태를 .claude/compact.md에 기록 |
-| `post-compact.mjs` | PostCompact | compact 후 .claude/compact.md 읽고 작업 재개 |
+| `pre-compact.mjs` | PreCompact | compact 전 .claudeignore 임시 해제 |
+| `post-compact.mjs` | PostCompact | compact 후 .claudeignore 복원 |
+| `intent-drift-check.mjs` | PreToolUse | 자동화 워크플로우(ralph/team) 중 시나리오 이탈 감지 |
+| `doc-update-check.mjs` | PreToolUse (Bash) | git commit 시 문서 갱신 필요 알림 |
 
 ## CI/CD (8 워크플로, 7 스크립트)
 
@@ -122,11 +125,14 @@ docs-omc/
 │   ├── docs-omc.md
 │   └── docs-omc-ref.md
 ├── hooks/
+│   ├── _parse-input.mjs    # 훅 공통 stdin 파싱 유틸리티
 │   ├── session-start.mjs
 │   ├── pre-commit-check.mjs
 │   ├── post-save-mmd.mjs
 │   ├── pre-compact.mjs
-│   └── post-compact.mjs
+│   ├── post-compact.mjs
+│   ├── intent-drift-check.mjs
+│   └── doc-update-check.mjs
 ├── skills/
 │   ├── dev-init/          # 개발 환경 초기화 + GitHub 연동
 │   ├── docs-init/         # 단계별 문서 템플릿 배치
@@ -134,7 +140,8 @@ docs-omc/
 │   ├── security-report/
 │   ├── test-report/
 │   ├── performance-report/
-│   └── architecture-doc/
+│   ├── architecture-doc/
+│   └── doc-review/
 ├── .coderabbit.yaml    # CodeRabbit AI 리뷰 한국어 설정
 ├── .github/
 │   ├── workflows/       # CI/CD (8 workflows)

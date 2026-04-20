@@ -58,11 +58,14 @@ for (const f of rulesFiles) {
 
 // hooks/*.mjs referenced in install.mjs
 const hooksFiles = [
+  "hooks/_parse-input.mjs",
   "hooks/session-start.mjs",
   "hooks/pre-commit-check.mjs",
   "hooks/post-save-mmd.mjs",
   "hooks/pre-compact.mjs",
-  "hooks/post-compact.mjs"
+  "hooks/post-compact.mjs",
+  "hooks/intent-drift-check.mjs",
+  "hooks/doc-update-check.mjs"
 ];
 for (const f of hooksFiles) {
   checkExists(f, `hook file: ${f}`);
@@ -71,11 +74,13 @@ for (const f of hooksFiles) {
 // skills/*/SKILL.md referenced in install.mjs
 const skills = [
   "dev-init",
+  "docs-init",
   "dev-team",
   "security-report",
   "test-report",
   "performance-report",
-  "architecture-doc"
+  "architecture-doc",
+  "doc-review"
 ];
 for (const skill of skills) {
   const skillMd = path.join("skills", skill, "SKILL.md");

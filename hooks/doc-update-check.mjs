@@ -4,17 +4,10 @@
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { parseHookInput, pass, info } from './_parse-input.mjs';
 
-const chunks = [];
-for await (const chunk of process.stdin) chunks.push(chunk);
-
-let input;
-try {
-  input = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-} catch {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+const input = await parseHookInput();
+if (!input) pass();
 
 const command = input.toolInput?.command || '';
 
@@ -22,10 +15,7 @@ const command = input.toolInput?.command || '';
 // git log --oneline | grep commit 같은 오탐 방지
 const isGitCommit = /\bgit\s+commit\b/.test(command) && !/\bgit\s+log\b/.test(command);
 
-if (!isGitCommit) {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+if (!isGitCommit) pass();
 
 const cwd = process.cwd();
 const docsDir = join(cwd, 'docs', 'dev');
@@ -42,14 +32,10 @@ try {
   stagedFiles = output.trim().split('\n').filter(Boolean);
 } catch {
   // git 명령 실패 시 무시하고 커밋 허용
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
+  pass();
 }
 
-if (stagedFiles.length === 0) {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+if (stagedFiles.length === 0) pass();
 
 // 문서 갱신 감지 결과 수집
 // { docName: [reason, ...] }
@@ -129,10 +115,7 @@ for (const [docName, reasons] of Object.entries(docAlerts)) {
 
 const hasAlerts = Object.keys(filteredAlerts).length > 0 || cascadeAlerts.length > 0;
 
-if (!hasAlerts) {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+if (!hasAlerts) pass();
 
 // 메시지 조합
 const lines = ['[Docs OMC] 문서 갱신 알림:'];
@@ -153,7 +136,4 @@ if (cascadeAlerts.length > 0) {
 lines.push('');
 lines.push('자동 갱신하지 않고 사용자에게 확인 후 진행하라.');
 
-console.log(JSON.stringify({
-  continue: true,
-  systemMessage: lines.join('\n')
-}));
+info(lines.join('\n'));

@@ -84,11 +84,11 @@ let settings = {};
 if (existsSync(settingsPath)) {
   try {
     const raw = readFileSync(settingsPath, 'utf8');
-    // JSONC 지원: 단일행 주석, 인라인 주석, 블록 주석 제거
+    // JSONC 지원: 블록 주석, 전체 행 주석, trailing comma 제거
     const cleaned = raw
-      .replace(/\/\*[\s\S]*?\*\//g, '')          // /* block */ 주석
-      .replace(/^\s*\/\/.*$/gm, '')              // 전체 행 // 주석
-      .replace(/(?<=")([^"]*)".*?\/\/.*$/gm, '$1"'); // 인라인 // 주석 (문자열 뒤)
+      .replace(/\/\*[\s\S]*?\*\//g, '')     // /* block */ 주석
+      .replace(/^\s*\/\/.*$/gm, '')         // 전체 행 // 주석
+      .replace(/,\s*([\]}])/g, '$1');       // trailing comma
     settings = JSON.parse(cleaned);
   } catch (e) {
     console.error(`settings.json 파싱 실패: ${e.message}`);

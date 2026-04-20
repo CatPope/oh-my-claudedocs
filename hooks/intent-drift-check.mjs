@@ -5,18 +5,10 @@
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { parseHookInput, pass, info } from './_parse-input.mjs';
 
-const chunks = [];
-for await (const chunk of process.stdin) chunks.push(chunk);
-
-// stdin 파싱 실패 시 조용히 통과
-let input;
-try {
-  input = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-} catch {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+const input = await parseHookInput();
+if (!input) pass();
 
 const cwd = process.cwd();
 const stateDir = join(cwd, '.omc', 'state');
@@ -25,10 +17,7 @@ const teamStatePath = join(stateDir, 'team-state.json');
 
 // 자동화 워크플로우가 활성화된 경우에만 동작
 const isActive = existsSync(ralphStatePath) || existsSync(teamStatePath);
-if (!isActive) {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+if (!isActive) pass();
 
 // 카운터 파일 경로
 const counterPath = join(stateDir, 'drift-counter.json');
@@ -52,15 +41,11 @@ try {
   writeFileSync(counterPath, JSON.stringify({ count: counter }), 'utf8');
 } catch {
   // 카운터 쓰기 실패 시 무시하고 통과
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
+  pass();
 }
 
 // THRESHOLD에 도달하지 않은 경우 통과
-if (counter % THRESHOLD !== 0) {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+if (counter % THRESHOLD !== 0) pass();
 
 // 원래 태스크 설명 읽기 (ralph-state 우선, 없으면 team-state)
 let originalTask = '';
@@ -82,4 +67,4 @@ const systemMessage =
   `수정 중인 파일, 변경 내용, 원래 요청과의 연관성을 점검하라. ` +
   `불일치가 감지되면 즉시 작업을 중단하고 사용자에게 보고한 뒤 방향을 재설정하라.`;
 
-console.log(JSON.stringify({ continue: true, systemMessage }));
+info(systemMessage);

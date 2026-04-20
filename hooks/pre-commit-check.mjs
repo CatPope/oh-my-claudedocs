@@ -4,17 +4,10 @@
 import { execSync } from 'child_process';
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
+import { parseHookInput, pass, block } from './_parse-input.mjs';
 
-const chunks = [];
-for await (const chunk of process.stdin) chunks.push(chunk);
-
-let input;
-try {
-  input = JSON.parse(Buffer.concat(chunks).toString('utf8'));
-} catch {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+const input = await parseHookInput();
+if (!input) pass();
 
 const command = input.toolInput?.command || '';
 
@@ -22,10 +15,7 @@ const command = input.toolInput?.command || '';
 // git log --oneline | grep commit 같은 오탐 방지
 const isGitCommit = /\bgit\s+commit\b/.test(command) && !/\bgit\s+log\b/.test(command);
 
-if (!isGitCommit) {
-  console.log(JSON.stringify({ continue: true }));
-  process.exit(0);
-}
+if (!isGitCommit) pass();
 
 // 프로젝트 루트에서 린트/포맷 도구 탐색
 const cwd = process.cwd();
@@ -67,10 +57,7 @@ try {
 }
 
 if (errors.length > 0) {
-  console.log(JSON.stringify({
-    continue: false,
-    stopReason: `[Docs OMC] 커밋 차단 — 린트/포맷 오류를 수정 후 다시 커밋하세요:\n\n${errors.join('\n\n')}`
-  }));
+  block(`[Docs OMC] 커밋 차단 — 린트/포맷 오류를 수정 후 다시 커밋하세요:\n\n${errors.join('\n\n')}`);
 } else {
-  console.log(JSON.stringify({ continue: true }));
+  pass();
 }

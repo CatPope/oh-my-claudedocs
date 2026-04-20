@@ -2,11 +2,11 @@
 // OMC, find-skills, context7 존재 확인. 없으면 경고.
 
 import { execSync } from 'child_process';
+import { parseHookInput, info } from './_parse-input.mjs';
 
-const chunks = [];
-for await (const chunk of process.stdin) chunks.push(chunk);
 // SessionStart 훅은 input이 없을 수 있지만 프로토콜 준수를 위해 읽는다
-// JSON 파싱은 불필요 — 이 훅은 입력 데이터를 사용하지 않음
+// JSON 파싱 결과는 이 훅에서 사용하지 않음
+await parseHookInput();
 
 const warnings = [];
 
@@ -51,10 +51,7 @@ try {
 }
 
 if (warnings.length > 0) {
-  console.log(JSON.stringify({
-    continue: true,
-    systemMessage: `[Docs OMC] 경고:\n${warnings.map(w => `- ${w}`).join('\n')}`
-  }));
+  info(`[Docs OMC] 경고:\n${warnings.map(w => `- ${w}`).join('\n')}`);
 } else {
-  console.log(JSON.stringify({ continue: true }));
+  pass();
 }

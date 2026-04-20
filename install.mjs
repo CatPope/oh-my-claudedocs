@@ -13,6 +13,7 @@ const home = homedir();
 const claudeDir = join(home, '.claude');
 const hooksDir = join(claudeDir, 'hooks', 'docs-omc');
 const rulesDir = join(claudeDir, 'rules');
+const docsDir = join(claudeDir, 'docs');
 const agentsDir = join(home, '.agents', 'skills');
 const scriptDir = resolve(import.meta.url.replace('file:///', '').replace('file://', ''), '..');
 
@@ -55,17 +56,18 @@ try {
   warn('OMC 설치 확인 실패. Claude Code CLI를 확인하세요.');
 }
 
-// ─── 2단계: 글로벌 Rules 배치 ───
+// ─── 2단계: 글로벌 Rules + 참조 문서 배치 ───
 log('[2/5] Rules 배치...');
 ensureDir(rulesDir);
+ensureDir(docsDir);
 copyFileSync(join(scriptDir, 'rules', 'docs-omc.md'), join(rulesDir, 'docs-omc.md'));
-copyFileSync(join(scriptDir, 'rules', 'docs-omc-ref.md'), join(rulesDir, 'docs-omc-ref.md'));
-ok('docs-omc.md 배치 완료');
+copyFileSync(join(scriptDir, 'rules', 'docs-omc-ref.md'), join(docsDir, 'docs-omc-ref.md'));
+ok('docs-omc.md → rules/, docs-omc-ref.md → docs/ 배치 완료');
 
 // ─── 3단계: 사용자 훅 등록 ───
 log('[3/5] 훅 등록...');
 ensureDir(hooksDir);
-for (const hook of ['session-start.mjs', 'pre-commit-check.mjs', 'post-save-mmd.mjs', 'pre-compact.mjs', 'post-compact.mjs', 'intent-drift-check.mjs', 'doc-update-check.mjs']) {
+for (const hook of ['_parse-input.mjs', 'session-start.mjs', 'pre-commit-check.mjs', 'post-save-mmd.mjs', 'pre-compact.mjs', 'post-compact.mjs', 'intent-drift-check.mjs', 'doc-update-check.mjs']) {
   copyFileSync(join(scriptDir, 'hooks', hook), join(hooksDir, hook));
 }
 ok('훅 파일 복사 완료');

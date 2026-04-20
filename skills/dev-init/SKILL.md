@@ -33,12 +33,7 @@ level: user
 - 이미 존재하면 건너뜀 (멱등성)
 - `<!-- DOCS-OMC-CONFIG-START -->` ~ `<!-- DOCS-OMC-CONFIG-END -->` 영역으로 OMC 설정과 분리
 
-## 2. .claude/compact.md 배치
-
-- `.claude/compact.md` 배치 (compact 시 상태 기록용)
-- `.claude/` 디렉토리는 Claude Code가 자동 생성
-
-## 3. 외부 스킬 탐색/설치
+## 2. 외부 스킬 탐색/설치
 
 `find-skills`를 사용하여 다음 스킬을 탐색하고 설치한다:
 
@@ -51,7 +46,7 @@ level: user
 
 이미 설치된 스킬은 건너뜀.
 
-## 4. 프로젝트 규모 → SRS/PRD 선택
+## 3. 프로젝트 규모 → SRS/PRD 선택
 
 사용자에게 프로젝트 규모를 질문한다:
 
@@ -61,7 +56,7 @@ level: user
 
 선택 결과를 CLAUDE.md에 기록한다.
 
-## 5. 완료 안내
+## 4. 완료 안내
 
 초기화 결과를 요약하고 다음 단계를 안내한다:
 
