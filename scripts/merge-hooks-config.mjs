@@ -55,6 +55,22 @@ const docsOmcHooks = {
         command: `node ${hooksDir}/post-save-mmd.mjs`.replace(/\\/g, '/'),
         timeout: 15
       }]
+    },
+    {
+      matcher: 'Write|Edit',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/post-doc-toc-sync.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
+    },
+    {
+      matcher: 'Write|Edit',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/post-doc-header-validate.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
     }
   ],
   PreCompact: [

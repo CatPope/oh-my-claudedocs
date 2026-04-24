@@ -12,8 +12,8 @@ if (!input) pass();
 const command = input.toolInput?.command || '';
 
 // git commit 패턴 감지 (git commit, git commit -m 등)
-// git log --oneline | grep commit 같은 오탐 방지
-const isGitCommit = /\bgit\s+commit\b/.test(command) && !/\bgit\s+log\b/.test(command);
+// git commit-graph 등 하위 명령어 제외
+const isGitCommit = /\bgit\s+commit(?:\s+|$)/.test(command);
 
 if (!isGitCommit) pass();
 

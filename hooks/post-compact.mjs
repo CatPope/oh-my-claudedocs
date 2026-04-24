@@ -23,7 +23,7 @@ const prompt = `[Docs OMC] compact 완료. 다음을 수행하라:
    - 기획 완료 → docs/dev/STP.md, docs/dev/GTM.md 추가
    - 설계 완료 → docs/dev/SRS.md 또는 PRD.md, docs/dev/Architecture.md, docs/dev/DetailedSpec.md 추가
    - 테스트 완료 → docs/dev/test-plan.md, docs/dev/test-results/, docs/dev/performance/, docs/dev/security-checklist/ 추가
-   - prd.md, UML* 는 항상 포함
+   - UML* 는 항상 포함
 3. .claudeignore.backup 파일을 삭제하라
 4. 중단된 작업을 자연스럽게 이어가라
 
