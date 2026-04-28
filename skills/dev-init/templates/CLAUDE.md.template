@@ -11,6 +11,7 @@
 | 코드 커버리지 목표 | {{COVERAGE_TARGET}} | 인터뷰 | 예: 80% |
 | 복잡도 기준 | {{COMPLEXITY_THRESHOLD}} | 인터뷰 | 예: Cyclomatic ≤ 10 |
 | 기술 스택 | {{TECH_STACK}} | 인터뷰 | 프레임워크, 언어, DB 등 |
+| 최종 산출물 | {{DELIVERABLE}} | 인터뷰 | 예: exe, Docker 컨테이너, Python 스크립트, npm 패키지, 웹 앱 등 |
 | 기본 실행 모드 | {{DEFAULT_MODE}} | dev-init | 예: dev-team ralph(권장), team ralph, autopilot |
 
 <!-- DOCS-OMC-CONFIG-END -->

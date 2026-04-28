@@ -113,9 +113,15 @@ for (const [docName, reasons] of Object.entries(docAlerts)) {
   }
 }
 
-const hasAlerts = Object.keys(filteredAlerts).length > 0 || cascadeAlerts.length > 0;
+// docs/dev/*.md 파일 스테이지 여부 확인 (작성+검토 세트 원칙)
+const stagedDocs = stagedFiles.filter(f =>
+  f.replace(/\\/g, '/').match(/^docs\/dev\/[^/]+\.md$/)
+);
 
-if (!hasAlerts) pass();
+const hasAlerts = Object.keys(filteredAlerts).length > 0 || cascadeAlerts.length > 0;
+const hasDocWrites = stagedDocs.length > 0;
+
+if (!hasAlerts && !hasDocWrites) pass();
 
 // 메시지 조합
 const lines = ['[Docs OMC] 문서 갱신 알림:'];
@@ -131,6 +137,12 @@ if (cascadeAlerts.length > 0) {
   for (const alert of cascadeAlerts) {
     lines.push(`- ${alert}`);
   }
+}
+
+if (hasDocWrites) {
+  lines.push('');
+  lines.push(`문서 작성+검토 세트: ${stagedDocs.map(f => f.split('/').pop()).join(', ')} 수정됨.`);
+  lines.push('커밋 후 `/doc-review` 실행을 권장한다. (문서 작성과 검토는 항상 세트로 진행)');
 }
 
 lines.push('');
