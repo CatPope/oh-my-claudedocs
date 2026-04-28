@@ -135,4 +135,4 @@ log('\n=== 설치 완료 ===');
 if (!context7Found) {
   log('  https://context7.com/ 에서 context7 MCP 토큰을 발급받아 claude에게 전달하세요.');
 }
-log('`cd [프로젝트 디렉토리] && claude /dev-init` 명령어를 복사하여 실행하세요.');
+log('프로젝트 디렉토리에서 `claude` 실행 후 `/dev-init` 명령어를 입력하세요.');
