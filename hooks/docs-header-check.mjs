@@ -17,8 +17,8 @@ try {
 const toolInput = input.tool_input || {};
 const filePath = (toolInput.file_path || '').replace(/\\/g, '/');
 
-// docs/ 하위 .md 파일만 대상
-if (!filePath.includes('/docs/') || !filePath.endsWith('.md')) {
+// docs/ 하위 .md 파일만 대상 (루트 상대 경로 docs/ 포함)
+if (!/(?:^|\/|\\)docs\//.test(filePath) || !filePath.endsWith('.md')) {
   console.log(JSON.stringify({ continue: true }));
   process.exit(0);
 }

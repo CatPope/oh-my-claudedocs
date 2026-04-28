@@ -23,8 +23,8 @@ if (!isGitPush) {
   process.exit(0);
 }
 
-// main/master로 force push 차단
-if (/--force/.test(command) && /(main|master)\b/.test(command)) {
+// main/master로 force push 차단 (--force 및 -f 단축형)
+if (/(?:--force\b|-f\b)/.test(command) && /(main|master)\b/.test(command)) {
   console.log(JSON.stringify({
     continue: false,
     stopReason: '[oh-my-claudedocs] main/master로의 force push는 차단됩니다.'

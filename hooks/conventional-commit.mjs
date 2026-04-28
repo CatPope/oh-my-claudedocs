@@ -66,7 +66,7 @@ const subject = message.split('\n')[0].trim();
 // type(scope): subject — scope은 선택, 한글/영문 허용
 const TYPES = ['feat', 'fix', 'docs', 'refactor', 'chore', 'test', 'style', 'perf', 'ci', 'build', 'revert'];
 const pattern = new RegExp(
-  `^(${TYPES.join('|')})(\\([a-z][a-z0-9-]*\\))?(!)?:\\s+.{1,50}$`
+  `^(${TYPES.join('|')})(\\([a-z][a-z0-9-]*\\))?(!)?:\\s+.{1,49}[^.]$`
 );
 
 if (!pattern.test(subject)) {

@@ -20,8 +20,9 @@ const toolName = input.tool_name || '';
 const toolInput = input.tool_input || {};
 const filePath = toolInput.file_path || '';
 
-// CLAUDE.md 대상만 검사
-if (!filePath.replace(/\\/g, '/').endsWith('/CLAUDE.md') && !filePath.endsWith('CLAUDE.md')) {
+// CLAUDE.md 대상만 검사 (MY_CLAUDE.md 등 오매칭 방지)
+const fileName = filePath.replace(/\\/g, '/').split('/').pop();
+if (fileName !== 'CLAUDE.md') {
   console.log(JSON.stringify({ continue: true }));
   process.exit(0);
 }
