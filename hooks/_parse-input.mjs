@@ -26,3 +26,6 @@ export function info(systemMessage) {
   console.log(JSON.stringify({ continue: true, systemMessage }));
   process.exit(0);
 }
+
+// 공통 정규식: git commit 감지 (git commit-graph 등 하위 명령어 제외)
+export const GIT_COMMIT_RE = /\bgit\s+commit(?:\s+|$)/;

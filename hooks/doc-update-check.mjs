@@ -4,16 +4,13 @@
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { parseHookInput, pass, info } from './_parse-input.mjs';
+import { parseHookInput, pass, info, GIT_COMMIT_RE } from './_parse-input.mjs';
 
 const input = await parseHookInput();
 if (!input) pass();
 
 const command = input.toolInput?.command || '';
-
-// git commit 패턴 감지 (git commit, git commit -m 등)
-// git commit-graph 등 하위 명령어 제외
-const isGitCommit = /\bgit\s+commit(?:\s+|$)/.test(command);
+const isGitCommit = GIT_COMMIT_RE.test(command);
 
 if (!isGitCommit) pass();
 
