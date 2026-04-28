@@ -84,6 +84,7 @@ for (const doc of allDocs) {
 // 3. 최근 코드 변경 vs 문서 변경 비교
 console.log('\n--- 3. 코드 vs 문서 최근 변경 ---');
 try {
+  execSync('git rev-parse --is-inside-work-tree', { stdio: 'pipe' });
   const gitEnv = { ...process.env, LC_ALL: 'C.UTF-8', LANG: 'C.UTF-8' };
   const codeCommits = execSync('git log --oneline -5 -- "*.js" "*.mjs" "*.ts" "*.json"', { encoding: 'utf8', env: gitEnv, stdio: ['pipe', 'pipe', 'pipe'] }).trim();
   const docCommits = execSync('git log --oneline -5 -- "docs/" "*.md"', { encoding: 'utf8', env: gitEnv, stdio: ['pipe', 'pipe', 'pipe'] }).trim();

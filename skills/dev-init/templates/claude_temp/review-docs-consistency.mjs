@@ -36,7 +36,7 @@ console.log('=== 문서 일관성 검토 ===\n');
 
 // 1. 프로젝트 이름 일관성
 const PROJECT_NAMES = ['oh-my-claudedocs', 'omcd'];
-const OLD_NAMES = ['docs-omc', 'Docs OMC', 'docsOmc', 'docs_omc'];
+const OLD_NAMES = ['docs-omc', 'docsOmc', 'docs_omc'];
 const nameIssues = [];
 
 for (const file of allFiles) {
