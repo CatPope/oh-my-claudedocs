@@ -1,4 +1,4 @@
-// merge-hooks-config.mjs — settings.json에 Docs OMC 훅을 안전 병합
+// merge-hooks-config.mjs — settings.json에 oh-my-claudedocs 훅을 안전 병합
 // 기존 설정 보존, 동일 이벤트에 append, 중복 방지 (멱등성)
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
@@ -8,9 +8,9 @@ const home = process.env.HOME || process.env.USERPROFILE || '';
 const claudeDir = join(home, '.claude');
 const settingsPath = join(claudeDir, 'settings.json');
 
-// Docs OMC 훅 정의
-const hooksDir = join(home, '.claude', 'hooks', 'docs-omc');
-const docsOmcHooks = {
+// oh-my-claudedocs 훅 정의
+const hooksDir = join(home, '.claude', 'hooks', 'omcd');
+const omcdHooks = {
   SessionStart: [
     {
       matcher: '',
@@ -89,7 +89,7 @@ if (!settings.hooks) {
 }
 
 // 3. 각 이벤트별로 append (중복 방지)
-for (const [event, entries] of Object.entries(docsOmcHooks)) {
+for (const [event, entries] of Object.entries(omcdHooks)) {
   if (!settings.hooks[event]) {
     settings.hooks[event] = [];
   }

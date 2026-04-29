@@ -1,4 +1,4 @@
-# Docs OMC
+# oh-my-claudedocs
 
 ## Git 규칙
 

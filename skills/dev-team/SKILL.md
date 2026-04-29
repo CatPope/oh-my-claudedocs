@@ -7,7 +7,7 @@ level: user
 
 # Purpose
 
-OMC의 `/team` 명령을 활용하여 Docs OMC 문서 체계의 게이트를 포함한 전체 개발 Flow를 오케스트레이션한다. 각 단계 전환 시 필수 문서의 존재/승인 여부를 확인한다.
+OMC의 `/team` 명령을 활용하여 oh-my-claudedocs 문서 체계의 게이트를 포함한 전체 개발 Flow를 오케스트레이션한다. 각 단계 전환 시 필수 문서의 존재/승인 여부를 확인한다.
 
 # Use When
 

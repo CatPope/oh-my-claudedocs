@@ -1,4 +1,4 @@
-# Docs OMC
+# oh-my-claudedocs
 
 개발 전 과정을 자동화하는 에이전트 시스템. 글로벌 규칙(Rules) + 프로젝트별 설정(CLAUDE.md) + Hook + Skill 조합으로 구성된다.
 
@@ -14,17 +14,17 @@
 ## 설치
 
 ```bash
-git clone <docs-omc-repo>
-cd docs-omc
+git clone <oh-my-claudedocs-repo>
+cd oh-my-claudedocs
 node install.mjs  # 전역 설치
 ```
 
 설치 내용:
 1. OMC 플러그인 확인/설치
-2. `~/.claude/rules/docs-omc.md` 배치
-3. `~/.claude/hooks/docs-omc/*.mjs` 배치 + settings.json 훅 등록
+2. `~/.claude/rules/omcd.md` 배치
+3. `~/.claude/hooks/omcd/*.mjs` 배치 + settings.json 훅 등록
 4. 기본 스킬 확인 (find-skills, context7)
-5. 커스텀 스킬 7개 설치 (`~/.agents/skills/`)
+5. 커스텀 스킬 8개 설치 (`~/.agents/skills/`)
 
 ## 사용법
 
@@ -47,13 +47,14 @@ cd my-project && claude
 /docs-init final   → 최종 문서 템플릿 배치
 ```
 
-## 스킬 목록 (7개)
+## 스킬 목록 (8개)
 
 | 스킬 | 용도 |
 |------|------|
 | `/dev-init` | 프로젝트 개발 환경 초기화 (Git, CLAUDE.md, 스킬, GitHub 연동) |
 | `/docs-init` | 단계별 문서 템플릿 배치 (plan/test/final/all) |
 | `/dev-team` | 문서 게이트 포함 개발 Flow 오케스트레이션 |
+| `/doctor-omcd` | oh-my-claudedocs 설치 상태 진단 |
 | `/security-report` | 보안 점검 결과 저장 |
 | `/test-report` | 테스트 결과 저장 |
 | `/performance-report` | 성능 벤치마크 결과 저장 |
@@ -73,7 +74,7 @@ cd my-project && claude
 
 | 워크플로 | 용도 |
 |----------|------|
-| `docs-omc-ci.yml` | 메인 품질 게이트 (구문 검사, install 검증, 템플릿 무결성, 시크릿 스캔, 의존성 감사) |
+| `omcd-ci.yml` | 메인 품질 게이트 (구문 검사, install 검증, 템플릿 무결성, 시크릿 스캔, 의존성 감사) |
 | `ai-pr-review.yml` | PR diff 기반 룰 리뷰 (docs/dev/ 변경 감지 포함) |
 | `ai-review-policy.yml` | AI blocker 키워드 탐지 + human 승인 강제 |
 | `claude.yml` | `@claude` PR 멘션 시 코드 리뷰/수정 자동화 |
@@ -114,13 +115,13 @@ cd my-project && claude
 ## 저장소 구조
 
 ```
-docs-omc/
+oh-my-claudedocs/
 ├── install.mjs         # 통합 설치 (모든 OS)
 ├── scripts/
 │   └── merge-hooks-config.mjs
 ├── rules/
-│   ├── docs-omc.md
-│   └── docs-omc-ref.md
+│   ├── omcd.md
+│   └── omcd-ref.md
 ├── hooks/
 │   ├── session-start.mjs
 │   ├── pre-commit-check.mjs
