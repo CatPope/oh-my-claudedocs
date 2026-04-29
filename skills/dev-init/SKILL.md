@@ -242,7 +242,18 @@ Step 5에서 SRS 또는 PRD가 이미 매핑되었으면 이 단계를 건너뛴
 
 선택 결과를 CLAUDE.md에 기록한다.
 
-## 7. 완료 안내
+## 7. GitHub 연동 설정
+
+`@claude` PR 멘션으로 코드 리뷰/수정을 자동화하려면 다음을 안내한다:
+
+1. `/install-github-app` 실행 — Claude GitHub App 설치 및 워크플로우 자동 생성
+2. OAuth 토큰 생성: `claude setup-token`
+3. 시크릿 등록: `gh secret set CLAUDE_CODE_OAUTH_TOKEN` → 토큰 붙여넣기
+
+> 설정 완료 후 PR 코멘트에서 `@claude 리뷰해줘`, `@claude 수정해줘` 등으로 사용할 수 있습니다.
+> 주의: 레포에 커밋된 설정(CLAUDE.md)만 적용되며, 로컬 플러그인(oh-my-claudecode, MCP 등)은 적용되지 않습니다.
+
+## 8. 완료 안내
 
 초기화 결과를 요약하고 다음 단계를 안내한다:
 
