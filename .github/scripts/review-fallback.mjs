@@ -60,7 +60,7 @@ for (const line of lines) {
       /^##\s+목차/.test(code) &&
       !code.includes("L")
     ) {
-      findings.push("문서 목차에 L값(줄 번호) 표기가 누락되었을 수 있습니다. `omcd.md` 규칙 9를 확인하세요.");
+      findings.push("문서 목차에 L값(줄 번호) 표기가 누락되었을 수 있습니다. `omcd.md` 규칙 10을 확인하세요.");
     }
 
     // omcd 전용: 필수 입력 플레이스홀더 감지
@@ -116,7 +116,7 @@ if (rulesFiles.length > 0) {
 }
 
 if (cascadeWarnings.length > 0) {
-  console.log("- 🔗 연쇄 갱신 체크 (omcd 규칙 7)");
+  console.log("- 🔗 연쇄 갱신 체크 (omcd 규칙 8)");
   for (const warning of cascadeWarnings) {
     console.log(`  - ${warning}`);
   }

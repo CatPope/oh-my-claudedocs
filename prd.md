@@ -21,7 +21,8 @@ oh-my-claudedocs/
 ├── scripts/
 │   └── merge-hooks-config.mjs          # settings.json 훅 안전 병합
 ├── rules/
-│   └── omcd.md                    # 글로벌 규칙 → ~/.claude/rules/
+│   ├── omcd.md                    # 글로벌 규칙 → ~/.claude/rules/
+│   └── omcd-ref.md                # 글로벌 규칙 → ~/.claude/rules/
 ├── hooks/                              # settings.json 사용자 훅 (.mjs)
 │   ├── session-start.mjs               # OMC, skills 확인
 │   ├── pre-commit-check.mjs            # 린트/포맷 (git commit 감지)
@@ -101,6 +102,7 @@ fi
 echo "[2/5] Rules 배치..."
 mkdir -p ~/.claude/rules
 cp rules/omcd.md ~/.claude/rules/omcd.md
+cp rules/omcd-ref.md ~/.claude/rules/omcd-ref.md
 
 # ─── 3단계: 사용자 훅 등록 ───
 echo "[3/5] 훅 등록..."
@@ -108,6 +110,8 @@ mkdir -p ~/.claude/hooks/omcd
 cp hooks/session-start.mjs    ~/.claude/hooks/omcd/
 cp hooks/pre-commit-check.mjs ~/.claude/hooks/omcd/
 cp hooks/post-save-mmd.mjs    ~/.claude/hooks/omcd/
+cp hooks/pre-compact.mjs      ~/.claude/hooks/omcd/
+cp hooks/post-compact.mjs     ~/.claude/hooks/omcd/
 
 # settings.json에 hooks 섹션 병합 (기존 설정 보존, 동일 이벤트에 append)
 node scripts/merge-hooks-config.mjs
@@ -132,7 +136,7 @@ echo "프로젝트 초기화: 프로젝트 디렉토리에서 /dev-init 실행"
 | 순서 | 동작 | 상세 |
 |------|------|------|
 | 1 | OMC 설치 확인/설치 | `claude plugin add oh-my-claudecode@omc` |
-| 2 | `rules/omcd.md` → `~/.claude/rules/` 복사 | 글로벌 규칙 (문서 분류, 거버넌스, 자동 설치 등) |
+| 2 | `rules/omcd.md`, `omcd-ref.md` → `~/.claude/rules/` 복사 | 글로벌 규칙 (문서 분류, 거버넌스, 자동 설치 등) |
 | 3 | `hooks/*.mjs` → `~/.claude/hooks/omcd/` 복사 + `settings.json` 훅 병합 | 사용자 훅 등록 (OMC 플러그인 훅과 별도 공존) |
 | 4 | 사전 스킬 확인 | `find-skills`, `context7`은 OMC에 포함 |
 | 5 | 커스텀 스킬 설치 | `dev-init`, `dev-team`, `security-report`, `test-report`, `performance-report`, `architecture-doc` |
@@ -165,7 +169,7 @@ install.sh 이후, 각 프로젝트 디렉토리에서 Claude Code 세션을 열
 │
 ├─ 3) install.sh 실행 (1회)
 │      ├─ OMC 플러그인 설치
-│      ├─ ~/.claude/rules/omcd.md 배치
+│      ├─ ~/.claude/rules/omcd.md, omcd-ref.md 배치
 │      ├─ ~/.claude/hooks/omcd/*.mjs 배치
 │      ├─ settings.json에 훅 등록
 │      └─ ~/.agents/skills/ 에 커스텀 스킬 6개 설치
