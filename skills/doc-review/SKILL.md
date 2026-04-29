@@ -1,81 +1,81 @@
 ---
 name: doc-review
-description: 전체 문서/코드 맥락 검토 — 난이도별 점수 보고서 생성 + 자동 수정
+description: Full document/code context review — generates a scored report by difficulty level + auto-fix
 argument-hint: "[full | quick | module-name]"
 level: user
 ---
 
 # Purpose
 
-프로젝트 문서와 코드를 대조 검토하여 일관성, 누락, 코드-문서 괴리를 점수로 평가하고 `docs/dev/review/review-YYYY-MM-DD.md`에 보고서를 생성한다. 이후 발견 문제를 자동 수정한다.
+Cross-reviews project documentation against the codebase to evaluate consistency, gaps, and code-doc divergence with a score, then generates a report at `docs/dev/review/review-YYYY-MM-DD.md`. Discovered issues are automatically fixed afterward.
 
 # Use When
 
-- 개발 단계 전환 시, 주요 결정 변경 후, 모듈/기능 완료 후, 정기 검토 시
+- When transitioning between development phases, after major decisions change, after a module/feature is complete, or during periodic reviews
 
 # Arguments
 
-| 인자 | 설명 |
-|------|------|
-| `full` | 심층 검토 (기본값) |
-| `quick` | 빠른 요약 (존재 여부 + 주요 불일치만) |
-| 모듈명 | 특정 모듈만 검토 (예: `auth`) |
+| Argument | Description |
+|----------|-------------|
+| `full` | Deep review (default) |
+| `quick` | Fast summary (existence check + major inconsistencies only) |
+| module name | Review a specific module only (e.g., `auth`) |
 
 # Steps
 
-## 1. 난이도 결정
+## 1. Determine Depth
 
-`quick` → 경량, `full` → 심층, 인자 없으면 사용자에게 질문 (경량/표준/심층).
+`quick` → lightweight, `full` → deep, no argument → ask the user (lightweight/standard/deep).
 
-## 2. 문서 인벤토리
+## 2. Document Inventory
 
-`docs/dev/` 스캔 → 존재 문서 목록 + 현재 단계 기준 누락 필수 문서 식별.
+Scan `docs/dev/` → list existing documents + identify missing required documents based on the current phase.
 
-## 3. 개별 문서 검증
+## 3. Individual Document Validation
 
-목차만 먼저 읽고 필요 섹션만 접근:
-- **구조**: 15줄 헤더 + L값 목차
-- **완성도**: 빈 섹션, TODO, placeholder
-- **최신성**: `git log` 대비 수정일
+Read the table of contents first, then access only the needed sections:
+- **Structure**: 15-line header + L-value table of contents
+- **Completeness**: empty sections, TODOs, placeholders
+- **Freshness**: last modified date vs. `git log`
 
-## 4. 문서 간 일관성 (표준 이상)
+## 4. Cross-Document Consistency (standard and above)
 
-- 용어 일관성, 결정 정합성 (SRS↔Architecture↔DetailedSpec), 기술 스택 일관성
+- Term consistency, decision alignment (SRS↔Architecture↔DetailedSpec), tech stack consistency
 
-## 5. 코드-문서 괴리 분석 (표준 이상)
+## 5. Code-Doc Divergence Analysis (standard and above)
 
-- ADR 결정 vs 코드, SRS 요구사항 vs 구현, Architecture vs 코드 구조
-- test-plan 범위 vs 테스트 파일, deploy-guide vs CI/CD 설정
+- ADR decisions vs. code, SRS requirements vs. implementation, Architecture vs. code structure
+- test-plan scope vs. test files, deploy-guide vs. CI/CD config
 
-## 6. 미래 방향성 (심층만)
+## 6. Future Direction (deep only)
 
-미구현 요구사항, 미구현 컴포넌트, 기술 부채 식별.
+Identify unimplemented requirements, unimplemented components, and technical debt.
 
-## 7. 점수 산출
+## 7. Score Calculation
 
-| 영역 | 가중치 | 감점 기준 (예시) |
-|------|--------|-----------------|
-| 구조 준수 | 10% | 헤더 위반 -20, L값 불일치 -10 |
-| 문서 완성도 | 25% | 빈 섹션 -15/개, TODO -5/개 |
-| 문서 간 일관성 | 25% | 용어 불일치 -10/건, 결정 충돌 -20/건 |
-| 코드-문서 정합성 | 30% | 미반영 요구사항 -15/건, 구조 불일치 -20/건 |
-| 최신성 | 10% | 미갱신 -15/문서, 30일+ -10/문서 |
+| Area | Weight | Deduction Criteria (examples) |
+|------|--------|-------------------------------|
+| Structure compliance | 10% | Header violation -20, L-value mismatch -10 |
+| Document completeness | 25% | Empty section -15/each, TODO -5/each |
+| Cross-doc consistency | 25% | Term inconsistency -10/item, decision conflict -20/item |
+| Code-doc alignment | 30% | Unimplemented requirement -15/item, structure mismatch -20/item |
+| Freshness | 10% | Not updated -15/doc, 30+ days stale -10/doc |
 
-등급: A(90+) B(75-89) C(60-74) D(40-59) F(0-39)
+Grade: A(90+) B(75-89) C(60-74) D(40-59) F(0-39)
 
-## 8. 보고서 작성
+## 8. Report Writing
 
-`docs/dev/review/review-YYYY-MM-DD.md`에 저장. 포함 내용:
-- 검토 메타(일시, 난이도, 범위, 종합 등급)
-- 영역별 점수 테이블
-- 문서 인벤토리, 발견 이슈(심각도순), 코드-문서 괴리 상세
-- 권장 조치 체크리스트
-- 이전 검토 대비 변화 (이전 보고서 존재 시)
+Save to `docs/dev/review/review-YYYY-MM-DD.md`. Contents include:
+- Review metadata (date/time, depth, scope, overall grade)
+- Per-area score table
+- Document inventory, discovered issues (sorted by severity), code-doc divergence details
+- Recommended action checklist
+- Changes since previous review (if a prior report exists)
 
-## 9. 자동 수정
+## 9. Auto-Fix
 
-수정 우선순위: 구조 위반 → 높음 → 중간 → 낮음
+Fix priority order: structure violations → high → medium → low
 
-- **Agent(writer)** 에 위임, 독립 문서는 병렬 수정
-- 수정 후 보고서 체크리스트 갱신
-- 변경 영역만 재채점하여 보고서 하단에 수정 전/후 점수 추가
+- Delegate to **Agent(writer)**, fix independent documents in parallel
+- Update the report checklist after fixes
+- Re-score only the changed areas and append before/after scores at the bottom of the report

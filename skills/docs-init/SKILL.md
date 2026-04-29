@@ -1,61 +1,61 @@
 ---
 name: docs-init
-description: 단계별 문서 템플릿 배치 — plan(기획/설계), test(테스트), final(최종), all(전체)
+description: Stage-based document template deployment — plan(planning/design), test(testing), final(completion), all(everything)
 argument-hint: "plan | test | final | all"
 level: user
 ---
 
 # Purpose
 
-Docs OMC 문서 템플릿을 단계별로 배치한다.
+Deploy Docs OMC document templates by development stage.
 
 # Use When
 
-- `/dev-init` 완료 후 문서 템플릿을 배치할 때
-- 개발 단계 전환 시 해당 단계 문서가 필요할 때
+- After completing `/dev-init`, when you need to deploy document templates
+- When transitioning between development stages and need documents for that stage
 
 # Arguments
 
-| 인자 | 배치 문서 |
-|------|----------|
-| `plan` (기본값) | SRS/PRD, STP, GTM, Architecture, DetailedSpec, adr/ |
+| Argument | Deployed Documents |
+|----------|--------------------|
+| `plan` (default) | SRS/PRD, STP, GTM, Architecture, DetailedSpec, adr/ |
 | `test` | test-plan, test-results/, performance/, security-checklist/, review/ |
 | `final` | db-schema, api-spec, env-guide, deploy-guide, limitations, README |
 | `all` | plan + test + final |
 
 # Steps
 
-## 0. 선행 조건
+## 0. Prerequisites
 
-CLAUDE.md 존재 확인. 없으면 `/dev-init` 안내 후 중단.
+Verify CLAUDE.md exists. If not, prompt the user to run `/dev-init` and stop.
 
-## 1. 초기화 확인
+## 1. Initialization Check
 
-기존 문서 발견 시 사용자에게 질문:
-1. **기존 유지** — 없는 파일만 배치 (멱등)
-2. **전부 덮어쓰기** — 템플릿으로 초기화
-3. **선택 초기화** — 사용자가 선택한 파일만 덮어씀
+If existing documents are found, ask the user:
+1. **Keep existing** — deploy only missing files (idempotent)
+2. **Overwrite all** — reset everything with templates
+3. **Selective reset** — overwrite only user-selected files
 
-기존 문서 없으면 바로 배치.
+If no existing documents are found, proceed with deployment immediately.
 
-## 2. 템플릿 배치
+## 2. Template Deployment
 
-`skills/dev-init/templates/docs/dev/`에서 해당 단계 템플릿을 `docs/dev/`로 복사.
+Copy the templates for the relevant stage from `skills/dev-init/templates/docs/dev/` into `docs/dev/`.
 
 ### plan
 
-`*.template.md` → `docs/dev/`: SRS 또는 PRD (CLAUDE.md 선택 따라), STP, GTM, Architecture, DetailedSpec + `docs/dev/adr/`
+`*.template.md` → `docs/dev/`: SRS or PRD (based on CLAUDE.md selection), STP, GTM, Architecture, DetailedSpec + `docs/dev/adr/`
 
 ### test
 
-`test-plan.template.md` → `docs/dev/test-plan.md` + 디렉토리: test-results/, performance/, security-checklist/, review/
+`test-plan.template.md` → `docs/dev/test-plan.md` + directories: test-results/, performance/, security-checklist/, review/
 
-**배치 후**: 사용자 동의 시 **Agent(test-engineer)** 가 코드베이스+기존 문서 기반으로 test-plan 자동 작성.
+**After deployment**: With user consent, **Agent(test-engineer)** automatically writes the test-plan based on the codebase and existing documents.
 
 ### final
 
 `*.template.md` → `docs/dev/`: db-schema, api-spec, env-guide, deploy-guide, limitations, README
 
-## 3. 완료 안내
+## 3. Completion Summary
 
-배치/건너뛴 파일 목록 + 다음 단계 안내.
+List deployed and skipped files, then provide guidance on the next step.

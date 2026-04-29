@@ -1,59 +1,59 @@
 ---
 name: architecture-doc
-description: Architecture.md 생성 — 시스템 개요, 모듈/레이어, 데이터 흐름, 인프라 토폴로지
+description: Generate Architecture.md — system overview, module/layer structure, data flow, infrastructure topology
 level: user
 ---
 
 # Purpose
 
-프로젝트의 아키텍처 문서를 생성한다. 코드베이스를 분석하여 시스템 개요, 모듈/레이어 구조, 데이터 흐름, 인프라 토폴로지를 작성하고 Mermaid 다이어그램을 포함한다.
+Generate an architecture document for the project. Analyzes the codebase to produce a system overview, module/layer structure, data flow, and infrastructure topology, including Mermaid diagrams.
 
 # Use When
 
-- 설계 단계에서 아키텍처 문서를 작성할 때
-- 기존 프로젝트의 아키텍처를 문서화할 때
-- 사용자가 `/architecture-doc`을 실행할 때
+- Writing an architecture document during the design phase
+- Documenting the architecture of an existing project
+- The user runs `/architecture-doc`
 
 # Do Not Use When
 
-- ADR(Architecture Decision Record)만 작성할 때 → `architecture-decision-records` 스킬 사용
-- 다이어그램만 필요할 때 → Mermaid 직접 작성
+- Only writing an ADR (Architecture Decision Record) → use the `architecture-decision-records` skill instead
+- Only a diagram is needed → write Mermaid directly
 
 # Steps
 
-1. **코드베이스 분석**
-   - 프로젝트 구조 탐색 (디렉토리, 주요 파일)
-   - 의존성 분석 (package.json, requirements.txt 등)
-   - 엔트리포인트 및 라우팅 구조 파악
-   - 데이터 모델/스키마 확인
+1. **Analyze the codebase**
+   - Explore the project structure (directories, key files)
+   - Analyze dependencies (package.json, requirements.txt, etc.)
+   - Identify entry points and routing structure
+   - Review data models/schemas
 
-2. **SRS/PRD 참조**
-   - `docs/dev/SRS.md` 또는 `docs/dev/PRD.md`에서 아키텍처 관련 요구사항 확인
-   - 비기능 요구사항 (성능, 보안, 확장성) 반영
+2. **Reference SRS/PRD**
+   - Check architecture-related requirements in `docs/dev/SRS.md` or `docs/dev/PRD.md`
+   - Incorporate non-functional requirements (performance, security, scalability)
 
-3. **Architecture.md 작성**
-   - `docs/dev/Architecture.template.md`의 목차 구조를 따른다
-   - 각 섹션을 코드베이스 분석 결과와 요구사항 기반으로 작성:
-     - 1. 시스템 개요 (목적, 설계 원칙, 컨텍스트 다이어그램)
-     - 2. 모듈/레이어 구조 (레이어 다이어그램, 모듈 목록, 인터페이스)
-     - 3. 데이터 흐름 (흐름 다이어그램, 변환 단계)
-     - 4. 인프라 토폴로지 (배포 아키텍처, 환경 구성)
-     - 5. 통신 방식 (내부/외부 통신, 이벤트 시스템)
-     - 6. 확장 전략 (수평/수직 확장, 캐싱)
-     - 7. 보안 아키텍처 (인증/인가, 암호화, 네트워크)
-     - 8. 기술 결정 요약 (ADR 참조)
+3. **Write Architecture.md**
+   - Follow the table of contents structure in `docs/dev/Architecture.template.md`
+   - Write each section based on codebase analysis and requirements:
+     - 1. System Overview (purpose, design principles, context diagram)
+     - 2. Module/Layer Structure (layer diagram, module list, interfaces)
+     - 3. Data Flow (flow diagram, transformation steps)
+     - 4. Infrastructure Topology (deployment architecture, environment configuration)
+     - 5. Communication Patterns (internal/external communication, event system)
+     - 6. Scaling Strategy (horizontal/vertical scaling, caching)
+     - 7. Security Architecture (authentication/authorization, encryption, networking)
+     - 8. Technology Decision Summary (ADR references)
 
-4. **다이어그램 생성**
-   - 시스템 컨텍스트 다이어그램 (`.mmd` 파일)
-   - 레이어 다이어그램
-   - 데이터 흐름 다이어그램
-   - 배포 아키텍처 다이어그램
-   - `.mmd` 파일 저장 시 Hook이 자동으로 PNG 변환
+4. **Generate diagrams**
+   - System context diagram (`.mmd` file)
+   - Layer diagram
+   - Data flow diagram
+   - Deployment architecture diagram
+   - The Hook automatically converts `.mmd` files to PNG on save
 
-5. **파일 저장**
-   - `docs/dev/Architecture.md`에 저장 (기존 템플릿 덮어쓰기)
-   - Git 커밋 (완성된 문서만 커밋)
+5. **Save files**
+   - Save to `docs/dev/Architecture.md` (overwrite existing template)
+   - Git commit (only commit the completed document)
 
-6. **완료 안내**
-   - 생성된 문서 및 다이어그램 목록 출력
-   - 주요 아키텍처 결정사항은 ADR로 별도 기록할 것을 안내
+6. **Completion summary**
+   - List generated documents and diagrams
+   - Advise that key architecture decisions should be recorded separately as ADRs

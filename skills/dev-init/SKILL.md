@@ -1,78 +1,78 @@
 ---
 name: dev-init
-description: 프로젝트 개발 환경 초기화 — Git, CLAUDE.md, 외부 스킬 설치, SRS/PRD 선택
+description: Initialize project development environment — Git, CLAUDE.md, external skill installation, SRS/PRD selection
 argument-hint: "[project name]"
 level: user
 ---
 
 # Purpose
 
-새 프로젝트에 Docs OMC 개발 환경을 세팅한다. CLAUDE.md 배치, 외부 스킬 설치, SRS/PRD 선택. 문서 템플릿 배치는 `/docs-init`으로 분리.
+Set up the Docs OMC development environment for a new project. Places CLAUDE.md, installs external skills, and selects SRS/PRD. Document template placement is handled separately by `/docs-init`.
 
 # Use When
 
-- 새 프로젝트 시작 또는 기존 프로젝트에 Docs OMC 도입 시
+- Starting a new project or introducing Docs OMC to an existing project
 
 # Steps
 
-## 0. Git 저장소 설정
+## 0. Git Repository Setup
 
-`git status`로 확인 후 분기:
+Check with `git status` and branch accordingly:
 
-### Git 초기화됨
+### Git Already Initialized
 
-`git remote -v`로 원격 저장소 확인:
-- **원격 있으면** → .gitignore 확인 후 다음 단계
-- **원격 없으면** → 사용자에게 질문: 1) GitHub 생성 (`gh repo create`) 2) 로컬만 유지 (4~5단계 건너뜀)
+Check remote with `git remote -v`:
+- **Remote exists** → Check .gitignore, then proceed to next step
+- **No remote** → Ask the user: 1) Create on GitHub (`gh repo create`) 2) Keep local only (skip steps 4–5)
 
-### Git 없음
+### No Git
 
-사용자에게 질문: 1) GitHub 생성 (`gh repo create`) 2) 로컬만 (`git init`) 3) 건너뛰기 (롤백 제한 안내)
+Ask the user: 1) Create on GitHub (`gh repo create`) 2) Local only (`git init`) 3) Skip (note rollback limitations)
 
-## 1. CLAUDE.md 배치
+## 1. Place CLAUDE.md
 
-없으면 `CLAUDE.md.template` 복사. 이미 있으면 건너뜀.
+Copy `CLAUDE.md.template` if missing. Skip if already present.
 
-### Placeholder 입력 시점
+### Placeholder Fill Timing
 
-| placeholder | 입력 시점 |
-|-------------|-----------|
-| `{{LANGUAGE}}`, `{{COMMIT_CONVENTION}}`, `{{DEFAULT_MODE}}` | **dev-init** (이 단계에서 질문) |
-| `{{BRANCH_STRATEGY}}` | 4단계 (브랜칭 전략 선택 시 자동) |
-| `{{SPEED_OR_SECURITY}}`, `{{GOVERNANCE_LEVEL}}`, `{{COVERAGE_TARGET}}`, `{{COMPLEXITY_THRESHOLD}}`, `{{TECH_STACK}}`, `{{DELIVERABLE}}` | **인터뷰** (`/deep-interview` 시 — 지금 묻지 않는다) |
+| placeholder | when to fill |
+|-------------|--------------|
+| `{{LANGUAGE}}`, `{{COMMIT_CONVENTION}}`, `{{DEFAULT_MODE}}` | **dev-init** (ask at this step) |
+| `{{BRANCH_STRATEGY}}` | Step 4 (auto-filled when branching strategy is selected) |
+| `{{SPEED_OR_SECURITY}}`, `{{GOVERNANCE_LEVEL}}`, `{{COVERAGE_TARGET}}`, `{{COMPLEXITY_THRESHOLD}}`, `{{TECH_STACK}}`, `{{DELIVERABLE}}` | **Interview** (during `/deep-interview` — do not ask now) |
 
-### 1단계 질문 흐름
+### Step 1 Question Flow
 
-1. **합의 언어** → `{{LANGUAGE}}` (한국어/English/기타)
-2. **커밋 컨벤션** → `{{COMMIT_CONVENTION}}` (Conventional Commits/자유 형식/직접 입력)
-3. **기본 실행 모드** → `{{DEFAULT_MODE}}` (dev-team ralph/dev-team/직접 입력)
+1. **Agreed language** → `{{LANGUAGE}}` (Korean/English/other)
+2. **Commit convention** → `{{COMMIT_CONVENTION}}` (Conventional Commits/free form/custom)
+3. **Default execution mode** → `{{DEFAULT_MODE}}` (dev-team ralph/dev-team/custom)
 
-## 2. 외부 스킬 탐색/설치
+## 2. Discover and Install External Skills
 
-`find-skills`로 탐색: stp-framework, gtm-strategy, architecture-decision-records, mermaid-cli. 이미 설치된 건 건너뜀.
+Search with `find-skills`: stp-framework, gtm-strategy, architecture-decision-records, mermaid-cli. Skip any already installed.
 
-## 3. 프로젝트 규모 → SRS/PRD 선택
+## 3. Project Scale → SRS/PRD Selection
 
-소규모(MVP) → PRD / 중대규모(팀) → SRS. 선택 결과를 CLAUDE.md에 기록.
+Small scale (MVP) → PRD / Medium–large scale (team) → SRS. Record the selection in CLAUDE.md.
 
-## 4. 브랜칭 전략 선택 (GitHub 설정 시만)
+## 4. Branching Strategy Selection (GitHub setup only)
 
-| 전략 | CI push 트리거 | CI PR 트리거 |
-|------|---------------|--------------|
+| Strategy | CI push trigger | CI PR trigger |
+|----------|----------------|---------------|
 | GitHub Flow | `[main, master]` | `[main, master]` |
 | Git Flow | `[main, master, develop, 'release/**']` | `[main, master, develop]` |
 | Trunk-Based | `[main, master]` | `[main, master]` |
 
-## 5. GitHub CI 배치 (GitHub 설정 시만)
+## 5. GitHub CI Setup (GitHub setup only)
 
-4단계 선택에 따라 트리거 치환하여 배치:
+Replace triggers based on step 4 selection and place files:
 - `.github/workflows/docs-omc-ci.yml`, `.github/scripts/`(validate-docs-structure, scan-secrets, check-dependency-audit), `.github/pull_request_template.md`
 
-이미 존재하는 파일은 건너뜀.
+Skip any files that already exist.
 
-## 6. 완료 안내
+## 6. Completion Summary
 
-초기화 결과 요약 + 다음 단계 안내:
-- `/dev-team` — 전체 개발 Flow 오케스트레이션 (권장)
-- `/docs-init plan` — 기획/설계 문서 템플릿만 배치
-- `/deep-interview` — 요구사항 수집 단독 실행
+Summarize initialization results and provide next step guidance:
+- `/dev-team` — Full development flow orchestration (recommended)
+- `/docs-init plan` — Place planning/design document templates only
+- `/deep-interview` — Run requirements gathering standalone

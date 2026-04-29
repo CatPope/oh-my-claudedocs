@@ -1,67 +1,67 @@
 ---
 name: performance-report
-description: 성능 테스트 래퍼 — 벤치마크 결과를 docs/dev/performance/에 날짜별 파일로 저장
+description: Performance test wrapper — saves benchmark results as date-stamped files under docs/dev/performance/
 argument-hint: "[benchmark target or command]"
 level: user
 ---
 
 # Purpose
 
-성능 테스트를 실행하고 결과를 `docs/dev/performance/performance-YYYY-MM-DD.md` 파일로 저장한다.
+Run performance tests and save the results to `docs/dev/performance/performance-YYYY-MM-DD.md`.
 
 # Use When
 
-- 성능 벤치마크 결과를 문서로 보존하고 싶을 때
-- 테스트 단계에서 성능 기준 달성 여부를 기록할 때
-- 사용자가 `/performance-report`를 실행할 때
+- You want to preserve benchmark results as a document
+- You need to record whether performance targets were met during the test phase
+- The user runs `/performance-report`
 
 # Do Not Use When
 
-- 간단한 성능 확인만 필요할 때 → 직접 벤치마크 도구 실행
+- You only need a quick performance check → run the benchmark tool directly
 
 # Steps
 
-1. 프로젝트의 성능 테스트 도구/스크립트를 탐색한다
-   - `package.json`의 `benchmark`, `perf`, `test:perf` 스크립트 확인
-   - 인자가 있으면 해당 대상/명령으로 실행
-2. 성능 테스트를 실행한다
-3. SRS/PRD에 정의된 성능 기준값이 있으면 비교한다
-4. 결과를 캡처하여 다음 형식으로 파일을 생성한다:
-   - 경로: `docs/dev/performance/performance-YYYY-MM-DD.md`
-   - 동일 날짜에 이미 파일이 있으면 타임스탬프 추가
+1. Discover the project's performance test tools or scripts
+   - Check `package.json` for `benchmark`, `perf`, or `test:perf` scripts
+   - If an argument was provided, run with that target or command
+2. Run the performance tests
+3. If performance baselines are defined in the SRS/PRD, compare against them
+4. Capture the results and create a file in the following format:
+   - Path: `docs/dev/performance/performance-YYYY-MM-DD.md`
+   - If a file already exists for that date, append a timestamp suffix
 
-5. 파일 내용 구성:
+5. File content structure:
 
 ```markdown
-# 성능 벤치마크 결과
+# Performance Benchmark Results
 
-- **실행 일시**: YYYY-MM-DD HH:mm
-- **환경**: {{environment (OS, CPU, RAM, Node version 등)}}
+- **Run date**: YYYY-MM-DD HH:mm
+- **Environment**: {{environment (OS, CPU, RAM, Node version, etc.)}}
 
-## 측정 결과
+## Measurements
 
-| 항목 | 기준값 | 실측값 | 달성 여부 |
-|------|--------|--------|-----------|
+| Item | Baseline | Actual | Met |
+|------|----------|--------|-----|
 | | | | |
 
-## 상세 결과
+## Detailed Results
 
-### {{측정 항목}}
-- **설명**:
-- **측정 방법**:
-- **결과**:
+### {{metric name}}
+- **Description**:
+- **Method**:
+- **Result**:
 
-## 환경 정보
+## Environment
 
-| 항목 | 값 |
-|------|-----|
+| Item | Value |
+|------|-------|
 | OS | |
 | CPU | |
 | RAM | |
 | Runtime | |
 
-## 개선 권고사항
+## Recommendations
 ```
 
-6. 생성된 파일 경로를 사용자에게 알린다
-7. Git 커밋한다 (완성된 문서만 커밋)
+6. Notify the user of the generated file path
+7. Commit to Git (only commit completed documents)

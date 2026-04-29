@@ -1,56 +1,56 @@
 ---
 name: security-report
-description: security-reviewer 에이전트 래퍼 — 보안 점검 결과를 docs/dev/security-checklist/에 날짜별 파일로 저장
+description: security-reviewer agent wrapper — saves security review results as date-stamped files under docs/dev/security-checklist/
 argument-hint: "[target path or scope]"
 level: user
 ---
 
 # Purpose
 
-OMC의 `security-reviewer` 에이전트를 실행하고, 콘솔 출력만 하는 읽기전용 에이전트의 결과를 캡처하여 `docs/dev/security-checklist/security-checklist-YYYY-MM-DD.md` 파일로 저장한다.
+Runs the OMC `security-reviewer` agent and captures its output — which is a read-only agent that only prints to console — then saves the results to `docs/dev/security-checklist/security-checklist-YYYY-MM-DD.md`.
 
 # Use When
 
-- 보안 점검 결과를 문서로 보존하고 싶을 때
-- 테스트 단계에서 보안 리뷰를 수행할 때
-- 사용자가 `/security-report`를 실행할 때
+- You want to preserve security review results as a document
+- Running a security review during the testing phase
+- The user invokes `/security-report`
 
 # Do Not Use When
 
-- 보안 점검 결과를 파일로 저장할 필요 없이 콘솔에서만 확인할 때 → `security-reviewer` 에이전트 직접 사용
+- You only need to view the results in the console without saving to a file → use the `security-reviewer` agent directly
 
 # Steps
 
-1. `security-reviewer` 에이전트를 실행한다
-   - 인자가 있으면 해당 경로/범위를 대상으로 점검
-   - 인자가 없으면 프로젝트 전체를 대상으로 점검
-2. 에이전트의 출력 결과를 캡처한다
-3. 다음 형식으로 파일을 생성한다:
-   - 경로: `docs/dev/security-checklist/security-checklist-YYYY-MM-DD.md`
-   - 동일 날짜에 이미 파일이 있으면 타임스탬프 추가 (`security-checklist-YYYY-MM-DD-HHmmss.md`)
-4. 파일 내용 구성:
+1. Run the `security-reviewer` agent
+   - If an argument is provided, scope the review to that path/area
+   - If no argument is provided, review the entire project
+2. Capture the agent's output
+3. Create a file in the following format:
+   - Path: `docs/dev/security-checklist/security-checklist-YYYY-MM-DD.md`
+   - If a file already exists for the same date, append a timestamp (`security-checklist-YYYY-MM-DD-HHmmss.md`)
+4. File content structure:
 
 ```markdown
-# 보안 점검 결과
+# Security Review Results
 
-- **실행 일시**: YYYY-MM-DD HH:mm
-- **점검 범위**: {{scope}}
-- **환경**: {{environment}}
+- **Date**: YYYY-MM-DD HH:mm
+- **Scope**: {{scope}}
+- **Environment**: {{environment}}
 
-## 점검 결과 요약
+## Summary
 
-| 항목 | 통과 | 실패 | 해당없음 |
-|------|------|------|----------|
-| 합계 | | | |
+| Category | Pass | Fail | N/A |
+|----------|------|------|-----|
+| Total    |      |      |     |
 
-## 상세 결과
+## Detailed Results
 
-| # | 점검 항목 | 결과 | 심각도 | 조치 내용 |
-|---|-----------|------|--------|-----------|
-| | | 통과/실패/해당없음 | 높음/중간/낮음 | |
+| # | Check Item | Result | Severity | Action |
+|---|------------|--------|----------|--------|
+|   |            | Pass/Fail/N/A | High/Medium/Low | |
 
-## 권고사항
+## Recommendations
 ```
 
-5. 생성된 파일 경로를 사용자에게 알린다
-6. Git 커밋한다 (완성된 문서만 커밋)
+5. Notify the user of the generated file path
+6. Commit to Git (only commit completed documents)
