@@ -14,18 +14,17 @@
 ## 설치
 
 ```bash
-git clone <docs-omc-repo>
-cd docs-omc
+git clone <oh-my-claudedocs-repo>
+cd oh-my-claudedocs
 node install.mjs  # 전역 설치
 ```
 
 설치 내용:
 1. OMC 플러그인 확인/설치
-2. `~/.claude/hooks/omcd/*.mjs` 배치 + settings.json 훅 등록
-3. 기본 스킬 확인 (find-skills, context7)
-4. 커스텀 스킬 7개 설치 (`~/.agents/skills/`)
-
-> **Note**: Rules(`omcd.md`, `omcd-ref.md`)는 글로벌 설치하지 않습니다. `/dev-init` 시 프로젝트별 `.claude/rules/`에 배치됩니다.
+2. `~/.claude/rules/omcd.md` 배치
+3. `~/.claude/hooks/omcd/*.mjs` 배치 + settings.json 훅 등록
+4. 기본 스킬 확인 (find-skills, context7)
+5. 커스텀 스킬 8개 설치 (`~/.agents/skills/`)
 
 ## 사용법
 
@@ -42,13 +41,14 @@ cd my-project && claude
 /dev-init          → 개발 환경 초기화 (Git, CLAUDE.md, Rules, claude_temp/, 스킬)
 ```
 
-## 스킬 목록 (7개)
+## 스킬 목록 (8개)
 
 | 스킬 | 용도 |
 |------|------|
 | `/dev-init` | 프로젝트 개발 환경 초기화 (Git, CLAUDE.md, Rules, 스킬 설치) |
 | `/docs-init` | 단계별 문서 템플릿 배치 (plan/test/final/all) |
 | `/dev-team` | 문서 게이트 포함 개발 Flow 오케스트레이션 |
+| `/doctor-omcd` | oh-my-claudedocs 설치 상태 진단 |
 | `/security-report` | 보안 점검 결과 저장 |
 | `/test-report` | 테스트 결과 저장 |
 | `/performance-report` | 성능 벤치마크 결과 저장 |
@@ -145,8 +145,8 @@ oh-my-claudedocs/
 ├── scripts/
 │   └── merge-hooks-config.mjs
 ├── rules/
-│   ├── omcd.md         # 프로젝트별 규칙 (원본)
-│   └── omcd-ref.md     # 상세 참조 (원본)
+│   ├── omcd.md
+│   └── omcd-ref.md
 ├── hooks/
 │   ├── session-start.mjs
 │   ├── pre-commit-check.mjs

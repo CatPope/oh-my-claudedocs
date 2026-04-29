@@ -69,7 +69,7 @@ try {
 if (errors.length > 0) {
   console.log(JSON.stringify({
     continue: false,
-    stopReason: `[Docs OMC] 커밋 차단 — 린트/포맷 오류를 수정 후 다시 커밋하세요:\n\n${errors.join('\n\n')}`
+    stopReason: `[oh-my-claudedocs] 커밋 차단 — 린트/포맷 오류를 수정 후 다시 커밋하세요:\n\n${errors.join('\n\n')}`
   }));
 } else {
   console.log(JSON.stringify({ continue: true }));

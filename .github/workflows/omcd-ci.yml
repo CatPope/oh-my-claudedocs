@@ -1,4 +1,4 @@
-name: Docs OMC CI
+name: oh-my-claudedocs CI
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: docs-omc-ci-${{ github.ref }}
+  group: omcd-ci-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
@@ -147,7 +147,7 @@ jobs:
           path: npm-audit.json
 
   final-digest:
-    name: Docs OMC CI
+    name: oh-my-claudedocs CI
     runs-on: ubuntu-latest
     if: always()
     permissions:
@@ -187,11 +187,11 @@ jobs:
           report "Dependency Audit"   "${DEPENDENCY_AUDIT}"
 
           if [ "${fail}" = true ]; then
-            echo "One or more Docs OMC CI jobs failed."
+            echo "One or more oh-my-claudedocs CI jobs failed."
             exit 1
           fi
 
-          echo "Docs OMC CI aggregate check passed."
+          echo "oh-my-claudedocs CI aggregate check passed."
 
       - name: Post final CI digest
         if: always() && github.event_name == 'pull_request'
@@ -204,7 +204,7 @@ jobs:
           AUDIT_RESULT:     ${{ needs.dependency-audit.result }}
         with:
           script: |
-            const marker = "<!-- docs-omc-ci-final-digest -->";
+            const marker = "<!-- omcd-ci-final-digest -->";
             const prNumber = context.payload.pull_request?.number;
 
             if (!prNumber) {
@@ -239,7 +239,7 @@ jobs:
 
             const bodyLines = [
               marker,
-              "## Docs OMC CI — Final Digest",
+              "## oh-my-claudedocs CI — Final Digest",
               "",
               `Head SHA: \`${headSha}\``,
               `Workflow run: [#${context.runId}](${runUrl})`,

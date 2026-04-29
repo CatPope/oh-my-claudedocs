@@ -201,7 +201,7 @@ jobs:
               echo
             fi
 
-            # 민감 경로 변경
+            # omcd 전용: 민감 경로 변경 플래그
             if [ "${DOCS_DEV_CHANGED}" = "true" ] || [ "${TEMPLATES_CHANGED}" = "true" ] || [ "${RULES_CHANGED}" = "true" ]; then
               echo "### 문서 변경 감지 — 추가 검토 필요"
               echo
@@ -212,7 +212,7 @@ jobs:
                 echo "- \`templates/docs/dev/*\` 변경: 기존 프로젝트 문서와 호환성을 확인하세요."
               fi
               if [ "${RULES_CHANGED}" = "true" ]; then
-                echo "- \`rules/*\` 변경: \`omcd.md\` / \`omcd-ref.md\` 일관성 및 CLAUDE.md 영향을 확인하세요."
+                echo "- \`rules/*\` 변경: 글로벌 규칙이 수정되었습니다. \`omcd.md\` / \`omcd-ref.md\` 일관성 및 CLAUDE.md 영향 여부를 확인하세요."
               fi
               echo
             fi
