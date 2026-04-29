@@ -49,8 +49,8 @@ try {
 
 // rules/*.md referenced in install.mjs
 const rulesFiles = [
-  "rules/docs-omc.md",
-  "rules/docs-omc-ref.md"
+  "rules/omcd.md",
+  "rules/omcd-ref.md"
 ];
 for (const f of rulesFiles) {
   checkExists(f, `rules file: ${f}`);

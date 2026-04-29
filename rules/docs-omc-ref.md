@@ -1,4 +1,4 @@
-# Docs OMC 참조 문서
+# oh-my-claudedocs 참조 문서
 
 > 에이전트가 필요할 때만 읽는 상세 참조 정보. `~/.claude/docs/`에 배치되어 자동 로드되지 않는다.
 > 접근: `Read ~/.claude/docs/docs-omc-ref.md`

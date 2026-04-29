@@ -26,7 +26,7 @@ cat > /tmp/omc-branch-protection.json <<'JSON'
   "required_status_checks": {
     "strict": true,
     "contexts": [
-      "Docs OMC CI",
+      "oh-my-claudedocs CI",
       "AI PR Review",
       "AI Review Policy",
       "CodeQL"

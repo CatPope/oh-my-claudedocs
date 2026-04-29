@@ -70,6 +70,7 @@ const HOOK_FILES = [
   '_parse-input.mjs', 'session-start.mjs', 'pre-commit-check.mjs',
   'post-save-mmd.mjs', 'post-doc-toc-sync.mjs', 'post-doc-header-validate.mjs',
   'pre-compact.mjs', 'post-compact.mjs', 'intent-drift-check.mjs', 'doc-update-check.mjs',
+  'claude-md-limit.mjs', 'conventional-commit.mjs', 'docs-header-check.mjs', 'pr-push-check.mjs',
 ];
 
 function phaseHooks() {

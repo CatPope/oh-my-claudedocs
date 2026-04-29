@@ -39,6 +39,30 @@ const docsOmcHooks = {
       }]
     },
     {
+      matcher: 'Bash',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/conventional-commit.mjs`.replace(/\\/g, '/'),
+        timeout: 10
+      }]
+    },
+    {
+      matcher: 'Bash',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/pr-push-check.mjs`.replace(/\\/g, '/'),
+        timeout: 10
+      }]
+    },
+    {
+      matcher: 'Write|Edit',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/claude-md-limit.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
+    },
+    {
       matcher: '',
       hooks: [{
         type: 'command',
@@ -69,6 +93,14 @@ const docsOmcHooks = {
       hooks: [{
         type: 'command',
         command: `node ${hooksDir}/post-doc-header-validate.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
+    },
+    {
+      matcher: 'Write|Edit',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/docs-header-check.mjs`.replace(/\\/g, '/'),
         timeout: 5
       }]
     }
