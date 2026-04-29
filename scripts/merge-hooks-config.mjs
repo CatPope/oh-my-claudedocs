@@ -29,6 +29,30 @@ const omcdHooks = {
         command: `node ${hooksDir}/pre-commit-check.mjs`.replace(/\\/g, '/'),
         timeout: 10
       }]
+    },
+    {
+      matcher: 'Bash',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/conventional-commit.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
+    },
+    {
+      matcher: 'Bash',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/pr-push-check.mjs`.replace(/\\/g, '/'),
+        timeout: 8
+      }]
+    },
+    {
+      matcher: 'Write|Edit',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/claude-md-limit.mjs`.replace(/\\/g, '/'),
+        timeout: 5
+      }]
     }
   ],
   PostToolUse: [
@@ -38,6 +62,14 @@ const omcdHooks = {
         type: 'command',
         command: `node ${hooksDir}/post-save-mmd.mjs`.replace(/\\/g, '/'),
         timeout: 15
+      }]
+    },
+    {
+      matcher: 'Write|Edit',
+      hooks: [{
+        type: 'command',
+        command: `node ${hooksDir}/docs-header-check.mjs`.replace(/\\/g, '/'),
+        timeout: 5
       }]
     }
   ],
