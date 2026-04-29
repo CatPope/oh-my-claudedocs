@@ -9,15 +9,14 @@
 | Claude Code | CLI 또는 IDE 확장 설치 완료 |
 | Node.js | v18+ (훅 스크립트 실행용) |
 | Git | 버전 관리 |
+| GitHub CLI | `gh` — PR 생성, 시크릿 관리 등 |
 
 ## 설치
 
-다음 명령어로 설치한다:
-
 ```bash
-git clone <oh-my-claudedocs-repo>
-cd oh-my-claudedocs
-node install.mjs #변경사항 전역으로 적용
+git clone <docs-omc-repo>
+cd docs-omc
+node install.mjs  # 전역 설치
 ```
 
 설치 내용:
@@ -41,15 +40,9 @@ cd my-project && claude
 
 ```
 /dev-init          → 개발 환경 초기화 (Git, CLAUDE.md, Rules, claude_temp/, 스킬)
-/docs-init plan    → 기획/설계 문서 템플릿 배치
-/deep-interview    → 요구사항 수집
-(기획/설계)         → STP, SRS/PRD, Architecture
-/docs-init test    → 테스트 문서 템플릿 배치
-/dev-team          → 문서 게이트 포함 자동 개발
-/docs-init final   → 최종 문서 템플릿 배치
 ```
 
-## 스킬 목록
+## 스킬 목록 (7개)
 
 | 스킬 | 용도 |
 |------|------|
@@ -68,7 +61,7 @@ cd my-project && claude
 
 | 훅 | 이벤트 | 동작 |
 |----|--------|------|
-| `session-start.mjs` | SessionStart | OMC + 스킬 존재 확인 |
+| `session-start.mjs` | SessionStart | OMC + 스킬 + context7 존재 확인 |
 | `pre-commit-check.mjs` | PreToolUse (Bash) | git commit 시 린트/포맷 검사 |
 | `post-save-mmd.mjs` | PostToolUse (Write) | .mmd 파일 → PNG 변환 |
 | `pre-compact.mjs` | PreCompact | compact 전 상태를 .claude/compact.md에 기록 |
@@ -109,9 +102,21 @@ GitHub Actions 워크플로 (6개):
 | `omcd-ci.yml` | 메인 품질 게이트 (구문 검사, install 검증, 템플릿 무결성, 시크릿 스캔, 의존성 감사) |
 | `ai-pr-review.yml` | PR diff 기반 룰 리뷰 (docs/dev/ 변경 감지 포함) |
 | `ai-review-policy.yml` | AI blocker 키워드 탐지 + human 승인 강제 |
+| `claude.yml` | `@claude` PR 멘션 시 코드 리뷰/수정 자동화 |
+| `claude-code-review.yml` | PR 생성/동기화 시 Claude 자동 리뷰 |
 | `codeql.yml` | JavaScript 정적 분석 (SAST) |
 | `repo-governance.yml` | 브랜치 보호 + Merge Queue 자동 적용 (수동 실행) |
 | `sbom.yml` | CycloneDX SBOM 생성 및 아티팩트 업로드 |
+
+## PR 규칙
+
+- PR 생성 시 `.github/pull_request_template.md` 템플릿 필수 사용
+- 용도별로 PR을 분리한다 (하나의 PR에 관련 없는 변경을 섞지 않는다)
+- push 전 반드시 확인:
+  1. 해당 PR이 열려있는지 확인 (merge/close된 PR에 push해도 master에 반영되지 않는다)
+  2. PR 제목과 현재 변경 사항이 일치하는지 확인
+  3. 불일치 시 열린 PR이 있는 기존 브랜치 중 적절한 것을 찾아 사용한다
+  4. 적절한 열린 PR이 없으면 새 브랜치 → 새 PR을 생성한다
 
 ## 문서 분류 체계
 
@@ -166,7 +171,7 @@ oh-my-claudedocs/
 │   └── architecture-doc/
 ├── .coderabbit.yaml    # CodeRabbit AI 리뷰 한국어 설정
 ├── .github/
-│   ├── workflows/       # CI/CD (6 workflows)
+│   ├── workflows/       # CI/CD (8 workflows)
 │   ├── scripts/         # CI/CD 스크립트 (7 scripts)
 │   ├── dependabot.yml   # 의존성 자동 업데이트
 │   └── pull_request_template.md
