@@ -33,6 +33,7 @@ Conventional Commits 형식을 따른다.
 ### PR 규칙
 
 - PR 생성 시 `.github/pull_request_template.md` 템플릿 필수 사용
+
 - 용도별로 PR을 분리한다 (관련 없는 변경을 섞지 않는다)
 - push 전 반드시 확인:
   1. 해당 PR이 열려있는지 확인 (merge/close된 PR에 push해도 반영되지 않는다)
