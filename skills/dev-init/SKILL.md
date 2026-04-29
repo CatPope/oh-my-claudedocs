@@ -7,12 +7,12 @@ level: user
 
 # Purpose
 
-새 프로젝트에 Docs OMC 개발 환경을 세팅한다. CLAUDE.md 배치, 필요한 외부 스킬 탐색/설치, 프로젝트 규모에 따라 SRS 또는 PRD를 선택한다. 문서 템플릿 배치는 `/docs-init`으로 분리되어 있다.
+새 프로젝트에 oh-my-claudedocs 개발 환경을 세팅한다. CLAUDE.md 배치, 필요한 외부 스킬 탐색/설치, 프로젝트 규모에 따라 SRS 또는 PRD를 선택한다. 문서 템플릿 배치는 `/docs-init`으로 분리되어 있다.
 
 # Use When
 
 - 새 프로젝트를 시작할 때
-- 기존 프로젝트에 Docs OMC를 도입할 때
+- 기존 프로젝트에 oh-my-claudedocs를 도입할 때
 - 사용자가 `/dev-init`을 실행할 때
 
 # Do Not Use When
@@ -31,11 +31,16 @@ level: user
 
 - 프로젝트 루트에 `CLAUDE.md`가 없으면 `CLAUDE.md.template`를 복사
 - 이미 존재하면 건너뜀 (멱등성)
-- `<!-- DOCS-OMC-CONFIG-START -->` ~ `<!-- DOCS-OMC-CONFIG-END -->` 영역으로 OMC 설정과 분리
+- `<!-- OMCD-CONFIG-START -->` ~ `<!-- OMCD-CONFIG-END -->` 영역으로 OMC 설정과 분리
 
-## 2. .claude/compact.md 배치
+## 2. .claude/compact.md + Rules + claude_temp/ 배치
 
 - `.claude/compact.md` 배치 (compact 시 상태 기록용)
+- `.claude/rules/omcd.md`, `.claude/rules/omcd-ref.md` 배치 (프로젝트별 규칙)
+  - 이미 존재하면 건너뜀 (멱등성)
+  - 글로벌 `~/.claude/rules/`에는 배치하지 않음 (컨텍스트 절약)
+- `claude_temp/` 디렉토리 생성 (스크립트 우선 실행 원칙용 작업 디렉토리)
+  - `.gitignore`에 `claude_temp/` 추가 (커밋 대상 아님)
 - `.claude/` 디렉토리는 Claude Code가 자동 생성
 
 ## 3. 외부 스킬 탐색/설치
