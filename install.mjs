@@ -55,6 +55,25 @@ function phaseOmc() {
   }
 }
 
+// ─── 이전 버전 정리 ───
+const LEGACY_FILES = [
+  // v1 → v2 rename: omcd → docs-omc
+  join(rulesDir, 'omcd.md'),
+  join(rulesDir, 'omcd-ref.md'),
+  join(docsDir, 'omcd-ref.md'),
+];
+const LEGACY_SKILLS = ['doctor-omcd', 'doc-review'];
+
+function cleanLegacy() {
+  for (const f of LEGACY_FILES) {
+    if (existsSync(f)) { rmSync(f); ok(`이전 버전 파일 삭제: ${f.split(/[\\/]/).pop()}`); }
+  }
+  for (const s of LEGACY_SKILLS) {
+    const p = join(agentsDir, s);
+    if (existsSync(p)) { rmSync(p, { recursive: true, force: true }); ok(`이전 버전 스킬 삭제: ${s}`); }
+  }
+}
+
 // ─── Phase 2: Rules + 참조 문서 ───
 function phaseRules() {
   log('[2/5] Rules 배치...');
@@ -75,6 +94,15 @@ const HOOK_FILES = [
 
 function phaseHooks() {
   log('[3/5] 훅 등록...');
+  if (isUpdate && existsSync(hooksDir)) {
+    // 삭제/이름변경된 훅 파일 정리
+    for (const f of readdirSync(hooksDir)) {
+      if (!HOOK_FILES.includes(f)) {
+        rmSync(join(hooksDir, f), { force: true });
+        ok(`이전 훅 삭제: ${f}`);
+      }
+    }
+  }
   ensureDir(hooksDir);
   for (const hook of HOOK_FILES) {
     copyFileSync(join(scriptDir, 'hooks', hook), join(hooksDir, hook));
@@ -129,6 +157,7 @@ const isUpdate = existsSync(join(hooksDir, 'session-start.mjs'));
 log(`=== Docs OMC 전역 ${isUpdate ? '업데이트' : '설치'} ===\n`);
 
 phaseOmc();
+if (isUpdate) cleanLegacy();
 phaseRules();
 phaseHooks();
 phasePrecheck();
