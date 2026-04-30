@@ -63,16 +63,16 @@ Small scale (MVP) → PRD / Medium–large scale (team) → SRS. Record the sele
 | Git Flow | `[main, master, develop, 'release/**']` | `[main, master, develop]` |
 | Trunk-Based | `[main, master]` | `[main, master]` |
 
-## 5. GitHub CI Setup (GitHub setup only)
+## 5. CI/CD and PR Template Setup
 
-Replace triggers based on step 4 selection and copy files from `~/.agents/skills/dev-init/templates/.github/` to the project root's `.github/`:
+Copy files from `~/.agents/skills/dev-init/templates/.github/` to the project root's `.github/`. If a branching strategy was selected in step 4, replace the CI trigger values accordingly.
 - `.github/workflows/docs-omc-ci.yml`
 - `.github/scripts/validate-docs-structure.mjs`
 - `.github/scripts/scan-secrets.mjs`
 - `.github/scripts/check-dependency-audit.mjs`
 - `.github/pull_request_template.md`
 
-Skip any files that already exist.
+Skip any files that already exist. This step runs regardless of whether a GitHub remote is configured — CI/CD files are always placed.
 
 ## 6. Completion Summary
 
