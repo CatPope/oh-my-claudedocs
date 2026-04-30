@@ -11,8 +11,8 @@ Orchestrate the full development flow including Docs OMC document gates using OM
 
 # Use When
 
-- You want to automate the entire development lifecycle
-- The user runs `/dev-team`
+- Automating the entire development lifecycle
+- User runs `/dev-team`
 
 # Do Not Use When
 
@@ -21,52 +21,26 @@ Orchestrate the full development flow including Docs OMC document gates using OM
 
 # Ralph Support
 
-Enable Ralph's persistent loop with `/dev-team ralph`. On failure, auto-retry; complete after Architect verification.
+`/dev-team ralph` enables persistent loop. Auto-retry on failure; complete after Architect verification.
 
-### Phases that still require user input in Ralph mode
-
-| Phase | What to ask | Why |
-|-------|-------------|-----|
-| Planning — SRS/PRD | Unclear requirements, scope | Errors in the base document cascade everywhere |
-| Planning — deep-interview | Requirements gathering | Only the user knows this information |
-| Design — approval gate | Governance, tech stack, quality standards | User consent required |
-| Testing — test-plan approval | Test scope/strategy | User approval required |
-| Final review — unresolved items | Fix / log issue / ignore | Requires user judgment |
-
-All other work (code implementation, document writing, test execution, etc.) proceeds autonomously.
+**Phases requiring user input even in Ralph**: Planning (SRS/PRD unclear items, deep-interview), Design approval gate, test-plan approval gate, Final review (unresolved items). All other work proceeds autonomously.
 
 # Configuration
 
-Read from the `<!-- DOCS-OMC-CONFIG-START -->` section in CLAUDE.md:
-- **Default execution mode**: if `team-ralph`, Ralph activates automatically
-- **pause-on-complete**: if `true`, prompt the user for confirmation after each phase before proceeding
+Read from `<!-- DOCS-OMC-CONFIG-START -->` in CLAUDE.md:
+- `team-ralph` → Ralph auto-activates
+- `pause-on-complete: true` → prompt user after each phase
 
-# Context Management Principles
+# Context Management
 
-**Main (orchestrator) = phase transitions + gates + user communication only. Everything else is delegated to sub-agents.**
+**Main (orchestrator) handles ONLY**: phase transitions, .claudeignore, gates, user communication, spawning sub-agents and receiving summaries (≤10 lines).
 
-### What the main agent does
+**Delegated to sub-agents**: all document/code read/write/review, test execution, file exploration. Independent tasks spawn in parallel. Cross-cutting files written by dedicated agent after related agents complete.
 
-- Decides phase transitions, manages .claudeignore
-- Confirms gates (approvals), communicates with the user
-- Spawns sub-agents and receives result summaries (10 lines or fewer)
+### .claudeignore by phase
 
-### What the main agent does NOT do (delegated to sub-agents)
-
-- Writing / editing / reading documents (including Read)
-- Code implementation / editing / review
-- Writing / running tests, file analysis / exploration
-
-### Delegation rules
-
-- Sub-agents read, work on, and save files directly. The main agent only receives summaries.
-- Independent tasks are spawned as **parallel** sub-agents.
-- Cross-cutting files (CI, docker-compose, etc.) are written by a dedicated agent after all related agents have completed.
-
-### .claudeignore updates by phase
-
-| Phase entry | Files to add |
-|-------------|--------------|
+| Phase entry | Add to .claudeignore |
+|-------------|---------------------|
 | Design | STP.md, GTM.md |
 | Implementation | SRS/PRD.md, Architecture.md, DetailedSpec.md |
 | Before test approval | Temporarily clear (full access) |
@@ -75,135 +49,82 @@ Read from the `<!-- DOCS-OMC-CONFIG-START -->` section in CLAUDE.md:
 
 # Pause-on-Complete Protocol
 
-When `pause-on-complete: true`, at the end of each phase:
-1. Show completion summary + list of created/modified files + next phase overview
-2. User says "continue" → proceed; requests changes → rework
+When enabled: show completion summary + files + next phase overview. User says "continue" → proceed; requests changes → rework. For phases with approval gate, run checkpoint **before** the gate.
 
-For phases with an approval gate, run the checkpoint **before** the gate.
-
-> `[Pause-on-Complete]` at the end of each phase below refers to this protocol.
+> `[Pause-on-Complete]` below refers to this protocol.
 
 # Steps
 
-## 0. Check execution mode
-
-Parse `default execution mode` and `pause-on-complete` from CLAUDE.md.
+## 0. Parse execution mode and pause-on-complete from CLAUDE.md
 
 ## 1. Pre-check
 
-Confirm `/dev-init` is complete (CLAUDE.md and docs/dev/ exist). If not, suggest running it.
+Confirm `/dev-init` complete (CLAUDE.md + docs/dev/ exist). If not, suggest running it.
 
-## 2. Planning phase
+## 2. Planning
 
-1. Agree on the project language
-2. Determine project scale → choose SRS or PRD (skip if already done)
+1. Agree on project language
+2. Project scale → SRS or PRD (skip if done)
 3. `/deep-interview` — gather requirements
-4. **Agent** → write STP (`/stp-framework`)
-5. **Agent** → write GTM (optional, `/gtm-strategy`)
-6. **Agent(writer)** → write SRS/PRD
-
-   > SRS/PRD is the foundation for all subsequent documents. Actively ask the user about anything unclear or missing. Never guess.
-
-7. Finalize development scope → auto-install additional skills
+4. **Agent** → `/stp-framework`, optionally `/gtm-strategy`
+5. **Agent(writer)** → write SRS/PRD (actively ask user about unclear/missing items — never guess)
+6. Finalize scope → auto-install additional skills
 
 [Pause-on-Complete]
 
-## 3. Design phase
+## 3. Design
 
-> Add planning documents to .claudeignore
+> Add planning docs to .claudeignore
 
 1. **Agent** → `/architecture-doc`
-2. Confirm whether to write DetailedSpec → YES: **Agent(writer)** writes it / NO: record in ADR
-3. **Agent(designer)** → UI/UX design
+2. DetailedSpec: YES → **Agent(writer)** / NO → record in ADR
+3. **Agent(designer)** → UI/UX
 
-[Pause-on-Complete] → followed by approval gate
+[Pause-on-Complete] → approval gate
 
-### Design approval gate
+**Design approval gate**: record in CLAUDE.md and require user approval for speed/security trade-offs, governance level, Git rules, quality standards, tech stack.
 
-Record in CLAUDE.md and require user approval for:
-- Speed vs. security trade-offs, governance level, Git rules, code quality standards, tech stack
+## 4. Implementation
 
-## 4. Implementation phase
+> Add design docs to .claudeignore
 
-> Add design documents to .claudeignore
-
-- Parallel multi-agent implementation via OMC `/team`
-- Hooks run lint/format automatically
-- `debugger` handles errors, `code-reviewer` reviews code
+Parallel multi-agent implementation via OMC `/team`. Hooks run lint/format automatically. `debugger` handles errors, `code-reviewer` reviews code.
 
 [Pause-on-Complete]
 
-## 5. Testing phase
+## 5. Testing
 
-### 5-1. Temporarily clear .claudeignore
+**5-1.** Back up `.claudeignore` → `.claudeignore.backup`, clear it.
 
-Back up `.claudeignore` to `.claudeignore.backup`, then reset to an empty file.
+**5-2.** Delegate to **Agent(qa-test-planner)**: draft test-plan if missing → parallel review (test-engineer + security-reviewer + code-reviewer) → auto-fix critical/medium → return summary.
 
-### 5-2. Write and review test-plan (delegated as a batch)
+[Pause-on-Complete] → test-plan approval gate (attach summary, don't run tests until approved)
 
-Delegate entirely to **Agent(qa-test-planner)**:
+**5-3.** Restore `.claudeignore.backup`, add previous-phase docs, delete backup.
 
-1. **Draft**: if `docs/dev/test-plan.md` is missing or is a placeholder, read all documents and write it from scratch. Skip if content already exists.
-2. **Parallel review across 3 areas**: spawn test-engineer (functional) + security-reviewer (security) + code-reviewer (performance) in parallel
-3. **Auto-fix**: critical severity is mandatory, medium is applied, low is at discretion
-4. **Return summary to main** (10 lines or fewer)
+**5-4.** Run tests:
+1. Extract test matrix from test-plan
+2. **Agent** → `/test-report`, `/performance-report`, `/security-report`
+3. **Final artifact E2E mandatory**: check `final artifact` in CLAUDE.md, build/package, then E2E test (exe→run, Docker→build+start, Python→entrypoint, npm→pack+install, web→server+browser E2E, unspecified→ask user)
 
-[Pause-on-Complete] → followed by approval gate
-
-### test-plan approval gate
-
-Attach the reviewed/revised test-plan summary and results from all 3 areas. Do not run tests until user approval.
-
-### 5-3. Restore .claudeignore
-
-Restore `.claudeignore.backup`, add previous-phase documents, then delete the backup.
-
-### 5-4. Run tests
-
-1. Extract the test type matrix from test-plan (type, path, command, CI inclusion)
-2. **Agent** → run `/test-report`, `/performance-report`, `/security-report`
-3. **E2E test of final artifact is mandatory**: check the `final artifact` entry in CLAUDE.md, build/package accordingly, then run E2E tests
-   - exe → build then run execution test
-   - Docker → image build + container startup test
-   - Python script → entrypoint execution test
-   - npm package → pack + install test
-   - Web app → server startup + browser E2E
-   - If not specified, ask the user
-
-### 5-5. CI workflow (after tests complete)
-
-> Cross-cutting rule: write after all test agents have completed
-
-1. **Agent(executor)** → write/update CI steps based on the test type list
-2. **Agent(verifier)** → verify CI covers all required types from test-plan. If any are missing, fix and re-verify.
+**5-5.** CI workflow: **Agent(executor)** writes CI steps → **Agent(verifier)** verifies coverage matches test-plan.
 
 ## 6. Final cleanup
 
-> Add test documents to .claudeignore
+> Add test docs to .claudeignore
 
-**Agent(writer)** writes maintenance documents in parallel:
-db-schema (if DB), api-spec (if API), env-guide, deploy-guide, limitations, README
+**Agent(writer)** writes in parallel: db-schema, api-spec, env-guide, deploy-guide, limitations, README (as applicable).
 
 [Pause-on-Complete]
 
-## 7. Document review (delegated to `/doc-review`)
+## 7. Document review → `/docs-reviewer`
 
-| Scale | When to delegate | Scope |
-|-------|-----------------|-------|
-| Large (10+ modules) | On each module completion | That module |
-| Medium (3–9 modules) | On major feature completion | That feature |
-| Small (1–2 modules) | On phase transition | Everything |
-
-**Agent(doc-reviewer)** → saves report + auto-fixes. Main agent receives only grade/fix summary.
+Scale-based delegation: large(10+ modules)=per module, medium(3-9)=per feature, small(1-2)=per phase.
 
 ## 8. Final verification
 
-**Agent(verifier)** audits the full project:
-
-- Document presence/structure (15-line header + L values) / code-document consistency / test coverage / CI completeness / Git status
-- List unresolved items → ask the user how to handle each (fix now / log as issue / ignore)
+**Agent(verifier)** audits: doc presence/structure, code-doc consistency, test coverage, CI completeness, Git status. Unresolved items → ask user (fix/log issue/ignore).
 
 ## 9. Done
 
-- Reset .claudeignore, print the full document checklist, notify of any missing items
-- Ralph mode: after Architect verification, run `/oh-my-claudecode:cancel`
+Reset .claudeignore, print document checklist, notify missing items. Ralph mode: after Architect verification, run `/oh-my-claudecode:cancel`.

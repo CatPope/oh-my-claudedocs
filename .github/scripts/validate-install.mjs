@@ -82,7 +82,8 @@ const skills = [
   "test-report",
   "performance-report",
   "architecture-doc",
-  "doc-review"
+  "docs-reviewer",
+  "docs-writer"
 ];
 for (const skill of skills) {
   const skillMd = path.join("skills", skill, "SKILL.md");

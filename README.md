@@ -58,7 +58,8 @@ cd my-project && claude
 | `/test-report` | 테스트 결과 저장 |
 | `/performance-report` | 성능 벤치마크 결과 저장 |
 | `/architecture-doc` | Architecture 문서 생성 |
-| `/doc-review` | 문서 일관성·결정 탈선·흐름 정합성 검토 |
+| `/docs-reviewer` | 문서 일관성·결정 탈선·흐름 정합성 검토 |
+| `/docs-writer` | 문서 작성/수정 — 단계별 문서 자동 작성, 디테일 집착 |
 
 ## 훅 목록 (7개)
 
@@ -141,7 +142,8 @@ docs-omc/
 │   ├── test-report/
 │   ├── performance-report/
 │   ├── architecture-doc/
-│   └── doc-review/
+│   ├── docs-reviewer/
+│   └── docs-writer/
 ├── .coderabbit.yaml    # CodeRabbit AI 리뷰 한국어 설정
 ├── .github/
 │   ├── workflows/       # CI/CD (8 workflows)

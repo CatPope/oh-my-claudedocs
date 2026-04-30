@@ -109,7 +109,7 @@ function phasePrecheck() {
 // ─── Phase 5: 커스텀 스킬 설치 ───
 const SKILLS = [
   'dev-init', 'docs-init', 'dev-team', 'security-report',
-  'test-report', 'performance-report', 'architecture-doc', 'doc-review',
+  'test-report', 'performance-report', 'architecture-doc', 'docs-reviewer', 'docs-writer',
 ];
 
 function phaseSkills() {

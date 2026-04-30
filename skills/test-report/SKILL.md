@@ -7,61 +7,17 @@ level: user
 
 # Purpose
 
-Run tests using OMC's `test-engineer` agent, verify results with the `verifier` agent, and save the output to `docs/dev/test-results/test-YYYY-MM-DD.md`.
+Run tests via `test-engineer` agent, verify with `verifier` agent, save to `docs/dev/test-results/test-YYYY-MM-DD.md`.
 
 # Use When
 
-- You want to preserve test run results as a document
-- You need to systematically record results during the test phase
-- The user runs `/test-report`
-
-# Do Not Use When
-
-- You only need to see test output in the console without saving to a file
+- Preserving test results as a document during the test phase
 
 # Steps
 
-1. Run the `test-engineer` agent
-   - If an argument is provided, run tests for that scope/command
-   - If no argument is provided, run the project's default test script
-2. Verify the test results with the `verifier` agent
-3. Capture the results and create a file in the following format:
-   - Path: `docs/dev/test-results/test-YYYY-MM-DD.md`
-   - If a file already exists for that date, append a timestamp
-
-4. File content structure:
-
-```markdown
-# Test Results
-
-- **Run Date/Time**: YYYY-MM-DD HH:mm
-- **Environment**: {{environment}}
-- **Test Tool**: {{test framework}}
-
-## Summary
-
-| Item | Count |
-|------|-------|
-| Total Tests | |
-| Passed | |
-| Failed | |
-| Skipped | |
-| Code Coverage | |
-
-## Failure Details
-
-| # | Test Name | Failure Reason | File:Line |
-|---|-----------|----------------|-----------|
-| | | | |
-
-## Coverage Details
-
-| Module | Lines | Branches | Functions |
-|--------|-------|----------|-----------|
-| | | | |
-
-## Verification Result (Verifier)
-```
-
-5. Notify the user of the generated file path
-6. Commit to Git (only commit completed documents)
+1. Run `test-engineer` agent (with argument scope, or project default test script)
+2. Verify results with `verifier` agent
+3. Save to `docs/dev/test-results/test-YYYY-MM-DD.md` (append timestamp if date exists)
+4. File structure: Run date/time, environment, test tool, summary table (total/passed/failed/skipped/coverage), failure details table (test name, reason, file:line), coverage details table (module, lines, branches, functions), verification result
+5. Notify user of file path
+6. Git commit (completed document only)

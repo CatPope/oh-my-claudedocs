@@ -139,7 +139,7 @@ if (cascadeAlerts.length > 0) {
 if (hasDocWrites) {
   lines.push('');
   lines.push(`문서 작성+검토 세트: ${stagedDocs.map(f => f.split('/').pop()).join(', ')} 수정됨.`);
-  lines.push('커밋 후 `/doc-review` 실행을 권장한다. (문서 작성과 검토는 항상 세트로 진행)');
+  lines.push('커밋 후 `/docs-reviewer` 실행을 권장한다. (문서 작성과 검토는 항상 세트로 진행)');
 }
 
 lines.push('');
