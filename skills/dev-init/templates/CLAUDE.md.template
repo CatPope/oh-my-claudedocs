@@ -1,32 +1,36 @@
-# 프로젝트 설정
-
-## 목차
-1. 프로젝트 설정 .. L18
-
-
-
-
-
-
-
-
-
-
----
-
 <!-- DOCS-OMC-CONFIG-START -->
 ## 1. 프로젝트 설정
 
-| 항목 | 값 | 비고 |
-|------|-----|------|
-| 합의 언어 | {{LANGUAGE}} | 모든 문서 작성 언어 |
-| 속도 vs 보안 | {{SPEED_OR_SECURITY}} | 에이전트 자동 판단 |
-| 거버넌스 단계 | {{GOVERNANCE_LEVEL}} | 경량 / 표준 / 엄격 |
-| Git 브랜치 전략 | {{BRANCH_STRATEGY}} | 예: GitHub Flow, Git Flow |
-| 커밋 컨벤션 | {{COMMIT_CONVENTION}} | 예: Conventional Commits |
-| 코드 커버리지 목표 | {{COVERAGE_TARGET}} | 예: 80% |
-| 복잡도 기준 | {{COMPLEXITY_THRESHOLD}} | 예: Cyclomatic ≤ 10 |
-| 기술 스택 | {{TECH_STACK}} | 프레임워크, 언어, DB 등 |
-| auto-ralph | false | true 시 /dev-team 실행 시 자동 ralph 모드 |
+| 항목 | 값 | 입력 시점 | 비고 |
+|------|-----|-----------|------|
+| 합의 언어 | {{LANGUAGE}} | dev-init | 모든 문서 작성 언어 |
+| 속도 vs 보안 | {{SPEED_OR_SECURITY}} | 인터뷰 | 에이전트 자동 판단 |
+| 거버넌스 단계 | {{GOVERNANCE_LEVEL}} | 인터뷰 | 경량 / 표준 / 엄격 |
+| Git 브랜치 전략 | {{BRANCH_STRATEGY}} | dev-init | 예: GitHub Flow, Git Flow |
+| 커밋 컨벤션 | {{COMMIT_CONVENTION}} | dev-init | 예: Conventional Commits |
+| 코드 커버리지 목표 | {{COVERAGE_TARGET}} | 인터뷰 | 예: 80% |
+| 복잡도 기준 | {{COMPLEXITY_THRESHOLD}} | 인터뷰 | 예: Cyclomatic ≤ 10 |
+| 기술 스택 | {{TECH_STACK}} | 인터뷰 | 프레임워크, 언어, DB 등 |
+| 최종 산출물 | {{DELIVERABLE}} | 인터뷰 | 예: exe, Docker 컨테이너, Python 스크립트, npm 패키지, 웹 앱 등 |
+| 기본 실행 모드 | {{DEFAULT_MODE}} | dev-init | 예: dev-team ralph(권장), team ralph, autopilot |
 
 <!-- DOCS-OMC-CONFIG-END -->
+
+## 2. 문서 구조 규칙 (docs/dev/ 전용)
+
+> 이 규칙은 `docs/dev/*.md` 파일에만 적용한다. CLAUDE.md 등 프로젝트 루트 파일에는 적용하지 않는다.
+
+`docs/dev/` 내 모든 문서는 **15줄 헤더 구조**를 따른다.
+
+- **1~14줄**: 제목 + 목차 (각 섹션의 시작 줄 번호를 `.. L줄번호` 형식으로 표기)
+- **15줄**: `---` (구분선)
+- **16줄~**: 본문
+
+**접근 규칙:**
+- 읽기: `limit: 15`로 목차만 먼저 읽고, L값으로 `offset` 접근
+- 작성 완료 후: 목차의 L값을 실제 줄 번호로 갱신
+- 수정 후 줄 수 변경 시: 목차의 L값 갱신
+
+## 3. 에러 대응 규칙
+
+라이브러리, 프레임워크, API 관련 에러 발생 시 **반드시** Context7 MCP로 공식 문서를 참조한 후 해결한다. 학습 데이터에 의존하지 않는다.

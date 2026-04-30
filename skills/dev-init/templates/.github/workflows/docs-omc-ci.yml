@@ -1,0 +1,212 @@
+name: Docs OMC CI
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+concurrency:
+  group: docs-omc-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  docs-structure:
+    name: Docs Structure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Validate docs/dev/ structure
+        run: node .github/scripts/validate-docs-structure.mjs
+
+  secret-scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Scan for leaked secrets
+        run: node .github/scripts/scan-secrets.mjs --history 80
+
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Run npm audit (if package.json exists)
+        id: audit
+        run: |
+          set -euo pipefail
+          if [ ! -f package.json ]; then
+            echo "no_package=true" >> "$GITHUB_OUTPUT"
+            echo "No package.json found — skipping npm audit."
+            exit 0
+          fi
+          echo "no_package=false" >> "$GITHUB_OUTPUT"
+          npm audit --omit=dev --json > npm-audit.json || true
+
+      - name: Enforce dependency audit gate
+        if: steps.audit.outputs.no_package != 'true'
+        run: node .github/scripts/check-dependency-audit.mjs npm-audit.json
+
+      - name: Upload dependency audit artifact
+        if: always() && steps.audit.outputs.no_package != 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: dependency-audit-${{ github.run_id }}
+          retention-days: 14
+          if-no-files-found: warn
+          path: npm-audit.json
+
+  final-digest:
+    name: Docs OMC CI
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      contents: read
+      pull-requests: write
+    needs:
+      - docs-structure
+      - secret-scan
+      - dependency-audit
+
+    steps:
+      - name: Check upstream job results
+        env:
+          DOCS_STRUCTURE: ${{ needs.docs-structure.result }}
+          SECRET_SCAN: ${{ needs.secret-scan.result }}
+          DEPENDENCY_AUDIT: ${{ needs.dependency-audit.result }}
+        run: |
+          fail=false
+
+          report() {
+            name="$1"
+            result="$2"
+            echo "${name}: ${result}"
+            if [ "${result}" = "failure" ] || [ "${result}" = "cancelled" ]; then
+              fail=true
+            fi
+          }
+
+          report "Docs Structure"    "${DOCS_STRUCTURE}"
+          report "Secret Scan"       "${SECRET_SCAN}"
+          report "Dependency Audit"  "${DEPENDENCY_AUDIT}"
+
+          if [ "${fail}" = true ]; then
+            echo "One or more Docs OMC CI jobs failed."
+            exit 1
+          fi
+
+          echo "Docs OMC CI aggregate check passed."
+
+      - name: Post final CI digest
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v9
+        env:
+          DOCS_RESULT:   ${{ needs.docs-structure.result }}
+          SECRET_RESULT: ${{ needs.secret-scan.result }}
+          AUDIT_RESULT:  ${{ needs.dependency-audit.result }}
+        with:
+          script: |
+            const marker = "<!-- docs-omc-ci-final-digest -->";
+            const prNumber = context.payload.pull_request?.number;
+
+            if (!prNumber) {
+              core.notice("Skip: no pull request context.");
+              return;
+            }
+
+            const { owner, repo } = context.repo;
+            const headSha = context.payload.pull_request.head.sha;
+
+            const statusLabel = (result) => {
+              if (result === "success")   return "SUCCESS";
+              if (result === "failure")   return "FAILURE";
+              if (result === "cancelled") return "CANCELLED";
+              if (result === "skipped")   return "SKIPPED";
+              return result ? result.toUpperCase() : "UNKNOWN";
+            };
+
+            const rows = [
+              ["Docs Structure",    process.env.DOCS_RESULT],
+              ["Secret Scan",       process.env.SECRET_RESULT],
+              ["Dependency Audit",  process.env.AUDIT_RESULT],
+            ];
+
+            const tableRows = rows.map(([name, result]) =>
+              `| ${name} | ${statusLabel(result)} |`
+            );
+
+            const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`;
+
+            const body = [
+              marker,
+              "## Docs OMC CI — Final Digest",
+              "",
+              `Head SHA: \`${headSha}\``,
+              `Workflow run: [#${context.runId}](${runUrl})`,
+              "",
+              "| Job | Result |",
+              "|---|---|",
+              ...tableRows,
+              "",
+              "_Auto-generated by Docs OMC CI._",
+            ].join("\n");
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+
+            const existing = comments.find(
+              (c) =>
+                c.user?.login === "github-actions[bot]" &&
+                typeof c.body === "string" &&
+                c.body.includes(marker)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner, repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo,
+                issue_number: prNumber,
+                body,
+              });
+            }

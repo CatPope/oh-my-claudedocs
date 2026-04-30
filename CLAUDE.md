@@ -1,4 +1,4 @@
-# oh-my-claudedocs
+# Docs OMC
 
 ## Git 규칙
 
@@ -33,10 +33,7 @@ Conventional Commits 형식을 따른다.
 ### PR 규칙
 
 - PR 생성 시 `.github/pull_request_template.md` 템플릿 필수 사용
-
 - 용도별로 PR을 분리한다 (관련 없는 변경을 섞지 않는다)
-- 커밋 완료 후 자동으로 push한다
-- push 후 PR body를 최신 변경 사항에 맞게 업데이트한다
 - push 전 반드시 확인:
   1. 해당 PR이 열려있는지 확인 (merge/close된 PR에 push해도 반영되지 않는다)
   2. PR 제목과 현재 변경 사항이 일치하는지 확인

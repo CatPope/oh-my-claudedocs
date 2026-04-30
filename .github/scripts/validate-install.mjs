@@ -58,11 +58,16 @@ for (const f of rulesFiles) {
 
 // hooks/*.mjs referenced in install.mjs
 const hooksFiles = [
+  "hooks/_parse-input.mjs",
   "hooks/session-start.mjs",
   "hooks/pre-commit-check.mjs",
   "hooks/post-save-mmd.mjs",
+  "hooks/post-doc-toc-sync.mjs",
   "hooks/pre-compact.mjs",
-  "hooks/post-compact.mjs"
+  "hooks/post-compact.mjs",
+  "hooks/intent-drift-check.mjs",
+  "hooks/doc-update-check.mjs",
+  "hooks/post-doc-header-validate.mjs"
 ];
 for (const f of hooksFiles) {
   checkExists(f, `hook file: ${f}`);
@@ -71,18 +76,33 @@ for (const f of hooksFiles) {
 // skills/*/SKILL.md referenced in install.mjs
 const skills = [
   "dev-init",
+  "docs-init",
   "dev-team",
   "security-report",
   "test-report",
   "performance-report",
-  "architecture-doc"
+  "architecture-doc",
+  "docs-reviewer",
+  "docs-writer"
 ];
 for (const skill of skills) {
   const skillMd = path.join("skills", skill, "SKILL.md");
   checkExists(skillMd, `skill SKILL.md: ${skillMd}`);
 }
 
-// ─── Check 3: Template files in dev-init ───
+// ─── Check 3: GitHub CI templates in dev-init ───
+const githubTemplateFiles = [
+  "skills/dev-init/templates/.github/workflows/docs-omc-ci.yml",
+  "skills/dev-init/templates/.github/scripts/validate-docs-structure.mjs",
+  "skills/dev-init/templates/.github/scripts/scan-secrets.mjs",
+  "skills/dev-init/templates/.github/scripts/check-dependency-audit.mjs",
+  "skills/dev-init/templates/.github/pull_request_template.md",
+];
+for (const f of githubTemplateFiles) {
+  checkExists(f, `github template: ${f}`);
+}
+
+// ─── Check 4: Template files in dev-init ───
 const templatesDir = "skills/dev-init/templates/docs/dev";
 
 if (!fs.existsSync(templatesDir)) {

@@ -1,95 +1,61 @@
 ---
 name: docs-init
-description: 단계별 문서 템플릿 배치 — plan(기획/설계), test(테스트), final(최종), all(전체)
+description: Stage-based document template deployment — plan(planning/design), test(testing), final(completion), all(everything)
 argument-hint: "plan | test | final | all"
 level: user
 ---
 
 # Purpose
 
-oh-my-claudedocs 문서 템플릿을 단계별로 배치한다. 개발 흐름에 맞춰 필요한 시점에 필요한 문서만 초기화할 수 있다.
+Deploy Docs OMC document templates by development stage.
 
 # Use When
 
-- `/dev-init` 완료 후 문서 템플릿을 배치할 때
-- 개발 단계 전환 시 해당 단계의 문서가 필요할 때
-- 사용자가 `/docs-init [plan|test|final|all]`을 실행할 때
-
-# Do Not Use When
-
-- `/dev-init`이 아직 실행되지 않았을 때 (CLAUDE.md 필요)
-- 이미 배치된 문서를 다시 배치하려 할 때 (멱등성으로 건너뜀)
+- After completing `/dev-init`, when you need to deploy document templates
+- When transitioning between development stages and need documents for that stage
 
 # Arguments
 
-| 인자 | 단계 | 배치 문서 |
-|------|------|----------|
-| `plan` | 기획/설계 | SRS/PRD, STP, GTM, Architecture, DetailedSpec, adr/ |
-| `test` | 테스트 | test-plan, test-results/, performance/, security-checklist/ |
-| `final` | 최종 문서 | db-schema, api-spec, env-guide, deploy-guide, limitations, README |
-| `all` | 전체 | 위 3단계 모두 |
-| (없음) | 기본값 = `plan` | `plan`과 동일 |
+| Argument | Deployed Documents |
+|----------|--------------------|
+| `plan` (default) | SRS/PRD, STP, GTM, Architecture, DetailedSpec, adr/ |
+| `test` | test-plan, test-results/, performance/, security-checklist/, review/ |
+| `final` | db-schema, api-spec, env-guide, deploy-guide, limitations, README |
+| `all` | plan + test + final |
 
 # Steps
 
-## 0. 선행 조건 확인
+## 0. Prerequisites
 
-- 프로젝트 루트에 `CLAUDE.md`가 존재하는지 확인
-- 없으면 `/dev-init`을 먼저 실행하라고 안내하고 중단
+Verify CLAUDE.md exists. If not, prompt the user to run `/dev-init` and stop.
 
-## 1. 인자 파싱
+## 1. Initialization Check
 
-- 인자가 없으면 `plan`으로 처리
-- `plan`, `test`, `final`, `all` 외의 값이면 사용법을 안내하고 중단
+If existing documents are found, ask the user:
+1. **Keep existing** — deploy only missing files (idempotent)
+2. **Overwrite all** — reset everything with templates
+3. **Selective reset** — overwrite only user-selected files
 
-## 2. 템플릿 배치
+If no existing documents are found, proceed with deployment immediately.
 
-`skills/dev-init/templates/docs/dev/`에서 해당 단계의 템플릿을 `docs/dev/`로 복사한다. 이미 존재하는 파일은 건너뜀 (멱등성).
+## 2. Template Deployment
 
-### plan (기획/설계)
+Copy the templates for the relevant stage from `~/.agents/skills/dev-init/templates/docs/dev/` into `docs/dev/`.
 
-파일:
-- `SRS.template.md` → `docs/dev/SRS.md` (CLAUDE.md의 SRS/PRD 선택에 따라)
-- `PRD.template.md` → `docs/dev/PRD.md` (CLAUDE.md의 SRS/PRD 선택에 따라)
-- `STP.template.md` → `docs/dev/STP.md`
-- `GTM.template.md` → `docs/dev/GTM.md`
-- `Architecture.template.md` → `docs/dev/Architecture.md`
-- `DetailedSpec.template.md` → `docs/dev/DetailedSpec.md`
+### plan
 
-디렉토리:
-- `docs/dev/adr/`
+`*.template.md` → `docs/dev/`: SRS or PRD (based on CLAUDE.md selection), STP, GTM, Architecture, DetailedSpec + `docs/dev/adr/`
 
-### test (테스트)
+### test
 
-파일:
-- `test-plan.template.md` → `docs/dev/test-plan.md`
+`test-plan.template.md` → `docs/dev/test-plan.md` + directories: test-results/, performance/, security-checklist/, review/
 
-디렉토리:
-- `docs/dev/test-results/`
-- `docs/dev/performance/`
-- `docs/dev/security-checklist/`
+**After deployment**: With user consent, **Agent(test-engineer)** automatically writes the test-plan based on the codebase and existing documents.
 
-### final (최종 문서)
+### final
 
-파일:
-- `db-schema.template.md` → `docs/dev/db-schema.md`
-- `api-spec.template.md` → `docs/dev/api-spec.md`
-- `env-guide.template.md` → `docs/dev/env-guide.md`
-- `deploy-guide.template.md` → `docs/dev/deploy-guide.md`
-- `limitations.template.md` → `docs/dev/limitations.md`
-- `README.template.md` → `docs/dev/README.md`
+`*.template.md` → `docs/dev/`: db-schema, api-spec, env-guide, deploy-guide, limitations, README
 
-### all (전체)
+## 3. Completion Summary
 
-`plan` + `test` + `final`을 순서대로 실행한다.
-
-## 3. 완료 안내
-
-배치 결과를 요약한다:
-- 새로 배치된 파일 목록
-- 이미 존재하여 건너뛴 파일 목록
-- 다음 단계 안내:
-  - `plan` 완료 시: `/deep-interview`로 요구사항 수집 제안
-  - `test` 완료 시: `test-plan.md` 작성 후 테스트 실행 안내
-  - `final` 완료 시: 각 문서 작성 안내
-  - `all` 완료 시: 전체 흐름 요약
+List deployed and skipped files, then provide guidance on the next step.

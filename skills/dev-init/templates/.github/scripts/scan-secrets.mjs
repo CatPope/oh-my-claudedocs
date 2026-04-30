@@ -31,21 +31,6 @@ const patterns = [
   { name: "Private key", regex: /-----BEGIN\s+(RSA|EC|DSA|OPENSSH)?\s*PRIVATE KEY-----/g },
 ];
 
-// 오탐 제외: fake/test/example 패턴
-const allowlist = [
-  /fake[-_]key/i,
-  /example[-_]key/i,
-  /test[-_]key/i,
-  /dummy[-_]key/i,
-  /sk-proj-fake/i,
-  /sk-ant-fake/i,
-  /YOUR[-_]API[-_]KEY/i,
-];
-
-function isAllowlisted(sample) {
-  return allowlist.some((re) => re.test(sample));
-}
-
 function trackedFiles() {
   const output = execFileSync("git", ["ls-files"], { encoding: "utf8" }).trim();
   if (!output) return [];
@@ -58,7 +43,7 @@ function scanContent(content, source, findings) {
     const line = lines[i];
     for (const pattern of patterns) {
       pattern.regex.lastIndex = 0;
-      if (pattern.regex.test(line) && !isAllowlisted(line)) {
+      if (pattern.regex.test(line)) {
         findings.push({
           source,
           line: i + 1,
@@ -102,7 +87,6 @@ function scanHistory(depth) {
       ).trim();
       if (!result) continue;
       for (const line of result.split("\n").slice(0, 10)) {
-        if (isAllowlisted(line)) continue;
         findings.push({
           source: `commit:${commit.slice(0, 12)}`,
           line: 0,
