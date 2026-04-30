@@ -5,7 +5,7 @@
 // 사전 조건: Node.js v18+, Git, Claude Code CLI
 
 import { execSync, execFileSync } from 'child_process';
-import { existsSync, mkdirSync, copyFileSync, readFileSync, readdirSync, statSync } from 'fs';
+import { existsSync, mkdirSync, copyFileSync, readFileSync, readdirSync, statSync, rmSync } from 'fs';
 import { join, resolve } from 'path';
 import { homedir } from 'os';
 
@@ -115,7 +115,11 @@ const SKILLS = [
 function phaseSkills() {
   log('[5/5] 스킬 설치...');
   for (const skill of SKILLS) {
-    copyRecursive(join(scriptDir, 'skills', skill), join(agentsDir, skill));
+    const dest = join(agentsDir, skill);
+    if (isUpdate && existsSync(dest)) {
+      rmSync(dest, { recursive: true, force: true });
+    }
+    copyRecursive(join(scriptDir, 'skills', skill), dest);
     ok(`${skill} ${isUpdate ? '갱신' : '설치'}됨`);
   }
 }
