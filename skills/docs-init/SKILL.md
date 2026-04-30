@@ -40,7 +40,7 @@ If no existing documents are found, proceed with deployment immediately.
 
 ## 2. Template Deployment
 
-Copy the templates for the relevant stage from `skills/dev-init/templates/docs/dev/` into `docs/dev/`.
+Copy the templates for the relevant stage from `~/.agents/skills/dev-init/templates/docs/dev/` into `docs/dev/`.
 
 ### plan
 

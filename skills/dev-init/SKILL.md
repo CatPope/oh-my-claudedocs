@@ -31,7 +31,7 @@ Ask the user: 1) Create on GitHub (`gh repo create`) 2) Local only (`git init`) 
 
 ## 1. Place CLAUDE.md
 
-Copy from `templates/CLAUDE.md.template` (relative to this skill directory) to the project root as `CLAUDE.md`. Skip if already present.
+Copy `~/.agents/skills/dev-init/templates/CLAUDE.md.template` to the project root as `CLAUDE.md`. Skip if already present.
 
 ### Placeholder Fill Timing
 
@@ -65,12 +65,12 @@ Small scale (MVP) → PRD / Medium–large scale (team) → SRS. Record the sele
 
 ## 5. GitHub CI Setup (GitHub setup only)
 
-Replace triggers based on step 4 selection and place files from `templates/.github/` (relative to this skill directory) to the project root's `.github/`:
-- `templates/.github/workflows/docs-omc-ci.yml` → `.github/workflows/docs-omc-ci.yml`
-- `templates/.github/scripts/validate-docs-structure.mjs` → `.github/scripts/validate-docs-structure.mjs`
-- `templates/.github/scripts/scan-secrets.mjs` → `.github/scripts/scan-secrets.mjs`
-- `templates/.github/scripts/check-dependency-audit.mjs` → `.github/scripts/check-dependency-audit.mjs`
-- `templates/.github/pull_request_template.md` → `.github/pull_request_template.md`
+Replace triggers based on step 4 selection and copy files from `~/.agents/skills/dev-init/templates/.github/` to the project root's `.github/`:
+- `.github/workflows/docs-omc-ci.yml`
+- `.github/scripts/validate-docs-structure.mjs`
+- `.github/scripts/scan-secrets.mjs`
+- `.github/scripts/check-dependency-audit.mjs`
+- `.github/pull_request_template.md`
 
 Skip any files that already exist.
 
